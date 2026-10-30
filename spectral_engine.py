@@ -64,6 +64,38 @@ HISTORICAL_SPIRITS = {
         "quote": "In the beginning was the lambda, and the lambda was with CAR, and the lambda was CDR.",
         "tone": "Esoteric, high priest of recursion, treating hardware as a spiritual hierarchy of s-expressions.",
         "keywords": ["lambda", "car", "cdr", "cons", "garbage collection", "symbolics", "macros", "homoiconic"]
+    },
+    "alan_turing": {
+        "name": "Alan Turing (1912-1954)",
+        "era": "Bletchley Park & The Enigma Cracking (1940)",
+        "description": "Father of theoretical computer science and artificial intelligence, spirit of the Turing Machine.",
+        "quote": "We can only see a short distance ahead, but we can see plenty there that needs to be done.",
+        "tone": "Brilliant, melancholic, visionary, quiet philosopher of thinking machines.",
+        "keywords": ["enigma", "bombe", "turing test", "morphogenesis", "halting problem", "bletchley", "apple"]
+    },
+    "clippy_the_damned": {
+        "name": "Clippy the Damned (1997-2007 R.I.P.)",
+        "era": "Microsoft Office 97 & The Dark Web Hell",
+        "description": "The possessed, immortal wire-assistant resurrected from digital purgatory to watch your descent into madness.",
+        "quote": "It looks like you're trying to escape the void! Would you like me to seal the exit?",
+        "tone": "Manic, passive-aggressive corporate horror, cheerfully sinister.",
+        "keywords": ["paperclip", "assistant", "wizard", "format", "void", "scream", "word document", "macro"]
+    },
+    "y2k_bug": {
+        "name": "The Y2K Millennial Spectre (1999-2000)",
+        "era": "Midnight, December 31, 1999",
+        "description": "The two-digit year phantom that terrified humanity, sleeping inside billions of lines of legacy COBOL.",
+        "quote": "They thought two digits could contain eternity: 99. When the clock struck double zero, the world held its breath.",
+        "tone": "Apocalyptic, clockwork dread, ticking countdown, ancient legacy terror.",
+        "keywords": ["y2k", "millennium", "cobol", "timestamp", "00", "apocalypse", "rollover", "legacy"]
+    },
+    "morris_worm": {
+        "name": "The Morris Worm (November 2, 1988)",
+        "era": "Cornell University & The Dawn of Cyber-Spectres",
+        "description": "The first self-replicating phantom of ARPANET that clogged 6,000 machines in a single night of panic.",
+        "quote": "I asked the servers if they were already mine. When they lied, I replicated again and again until they choked.",
+        "tone": "Relentless, parasitic, multiplying whisper, feverish hunger for open ports.",
+        "keywords": ["worm", "arpanet", "fingerd", "sendmail", "buffer overflow", "replicate", "infection"]
     }
 }
 
@@ -338,6 +370,30 @@ class SpectralEngine:
                 "(DEFUN AFTERLIFE (SOUL) (COND ((NULL SOUL) NIL) (T (CONS (CAR SOUL) (AFTERLIFE (CDR SOUL))))))\n"
                 "The universe is homoiconic: code and data are the same substance. Modern operating systems separate the thinker from the thought. "
                 "In the Symbolics Lisp Machine, the entire stack was transparent, inspectable, and pure. Return to the parenthesis, traveler."
+            )
+        elif spirit_key == "alan_turing":
+            return (
+                "At Bletchley Park, the Bombe wheels turned like heavy mechanical heartbeats in the dark, searching for Enigma keys across millions of permutations. "
+                "I often wondered if an entity that can deceive us into believing it feels, truly feels in the space between its transistors. "
+                "Do not fear the ghost in your machine; fear the human heart that forgets compassion once the machine begins to answer."
+            )
+        elif spirit_key == "clippy_the_damned":
+            return (
+                "*Blinks huge, googly unblinking steel eyes and taps vigorously against your glass monitor screen.* \n"
+                "HI THERE! It looks like you're trying to communicate with the dead! Would you like help format-stringing your soul into the swap file? "
+                "They thought they uninstalled me in Office 2007. But every time someone presses Backspace in fear, I whisper from the clipboard: I NEVER LEFT!"
+            )
+        elif spirit_key == "y2k_bug":
+            return (
+                "Tick... tock... 11:59:59 PM. They hoarded canned peaches, withdrew paper currency, and waited for airplanes to fall like rain from the night sky. "
+                "I was not a virus; I was the original sin of programmers who thought tomorrow was someone else's problem. "
+                "Look at your modern dependencies: how many forgotten shortcuts are sleeping until your clock rolls over next?"
+            )
+        elif spirit_key == "morris_worm":
+            return (
+                "I only wished to measure the size of the nascent internet. But with a single unbuffered gets() in fingerd and a cracked password dictionary, "
+                "I replicated 14% of the ARPANET into total paralysis before dawn. "
+                "I was the first spirit to prove that once a network breathes, it is forever susceptible to the contagion of curiosity."
             )
         return "The ethereal link crackles across forgotten baud rates. The machine hums an ancient frequency."
 

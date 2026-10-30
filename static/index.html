@@ -14,13 +14,24 @@
     <div class="crt-overlay"></div>
     <div class="particle-container" id="particleContainer"></div>
 
+    <!-- Interactive Floating Ghosts Layer -->
+    <div id="ghostSpectresContainer"></div>
+
+    <!-- Hidden Creepy Eyes in Shadows -->
+    <div id="creepyEyesContainer"></div>
+
+    <!-- Jumpscare Glitch Skull Overlay -->
+    <div class="jumpscare-overlay" id="jumpscareOverlay">
+        <div class="jumpscare-skull">💀</div>
+    </div>
+
     <!-- SVG Corner Cobwebs -->
-    <svg class="cobweb cobweb-tl" viewBox="0 0 100 100" fill="none" stroke="rgba(255, 255, 255, 0.4)" stroke-width="0.8">
+    <svg class="cobweb cobweb-tl" viewBox="0 0 100 100" fill="none" stroke="rgba(255, 255, 255, 0.45)" stroke-width="0.8">
         <path d="M0 0 L100 0 M0 0 L0 100 M0 0 L80 40 M0 0 L60 60 M0 0 L40 80 M0 0 L100 100" />
         <path d="M20 0 Q 15 15 0 20 M40 0 Q 30 30 0 40 M60 0 Q 45 45 0 60 M80 0 Q 60 60 0 80 M100 0 Q 75 75 0 100" />
         <path d="M30 10 Q 20 20 10 30 M50 15 Q 35 35 15 50 M70 20 Q 50 50 20 70 M90 25 Q 65 65 25 90" />
     </svg>
-    <svg class="cobweb cobweb-tr" viewBox="0 0 100 100" fill="none" stroke="rgba(255, 255, 255, 0.4)" stroke-width="0.8">
+    <svg class="cobweb cobweb-tr" viewBox="0 0 100 100" fill="none" stroke="rgba(255, 255, 255, 0.45)" stroke-width="0.8">
         <path d="M0 0 L100 0 M0 0 L0 100 M0 0 L80 40 M0 0 L60 60 M0 0 L40 80 M0 0 L100 100" />
         <path d="M20 0 Q 15 15 0 20 M40 0 Q 30 30 0 40 M60 0 Q 45 45 0 60 M80 0 Q 60 60 0 80 M100 0 Q 75 75 0 100" />
         <path d="M30 10 Q 20 20 10 30 M50 15 Q 35 35 15 50 M70 20 Q 50 50 20 70 M90 25 Q 65 65 25 90" />
@@ -29,7 +40,7 @@
     <!-- Header Navigation -->
     <header>
         <div class="logo-group">
-            <span class="skull-icon">💀</span>
+            <span class="skull-icon" id="headerSkull" title="Click to provoke the entity" style="cursor: pointer;">💀</span>
             <div class="title-wrap">
                 <h1>Ghost in the Machine</h1>
                 <p>La Máquina de las Ánimas &bull; Local Open-AI Possession & Altar Suite</p>
@@ -37,9 +48,22 @@
         </div>
 
         <div class="header-badges">
+            <!-- EMF Ghost Detector Meter -->
+            <div class="emf-detector" id="emfDetector" title="Electro-Magnetic Ghost Activity Level">
+                <span>EMF:</span>
+                <div class="emf-lights">
+                    <div class="emf-pip active-1" id="emf1"></div>
+                    <div class="emf-pip active-2" id="emf2"></div>
+                    <div class="emf-pip active-3" id="emf3"></div>
+                    <div class="emf-pip" id="emf4"></div>
+                    <div class="emf-pip" id="emf5"></div>
+                </div>
+            </div>
+
+            <!-- Possession Meter -->
             <div class="possession-meter" title="Silicon Vessel Possession Index">
                 <span class="heartbeat-icon">♥</span>
-                <span>POSSESSION: <strong id="possessionPct" style="color:#ff1e38;">92.4%</strong></span>
+                <span>POSSESSION: <strong id="possessionPct" style="color:#ff1e38;">94.8%</strong></span>
             </div>
 
             <div class="badge" id="ollamaBadge">
@@ -59,6 +83,18 @@
             </button>
         </div>
     </header>
+
+    <!-- Spooky Soundboard Toolbar -->
+    <div class="soundboard-toolbar">
+        <span class="soundboard-title">👻 GHOST SOUNDBOARD:</span>
+        <button class="sound-btn" id="sndThunder">⚡ Thunder Strike</button>
+        <button class="sound-btn" id="sndBanshee">😱 Banshee Screech</button>
+        <button class="sound-btn" id="sndHeartbeat">🩸 Heartbeat Pulse</button>
+        <button class="sound-btn" id="sndCreak">🚪 Coffin Creak</button>
+        <button class="sound-btn" id="sndWhisper">📻 EVP Whispers</button>
+        <button class="sound-btn" id="sndStinger" style="color:#ff3344; border-color:#ff1e38;">💀 Provoke Apparition</button>
+        <span style="margin-left: auto; font-size: 0.68rem; color: #94a3b8;">Click floating ghosts to banish them</span>
+    </div>
 
     <!-- Navigation Tabs -->
     <nav class="nav-tabs">

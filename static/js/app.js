@@ -1,6 +1,11 @@
 /**
- * Ghost in the Machine - Frontend Logic & Web Client
- * Atmospheric Haunted Terminal, Ouija Séance, and Digital Ofrenda
+ * Ghost in the Machine - Advanced Interactive Haunted Client
+ * Features:
+ * - Interactive Floating Ghost Apparitions (Click/hover to provoke)
+ * - Creepy Glowing Demon Eyes appearing in dark corners
+ * - Live Electro-Magnetic Field (EMF) Ghost Meter
+ * - Spooky Procedural Soundboard Toolbar
+ * - Jumpscare Flash Apparition
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -19,9 +24,124 @@ document.addEventListener("DOMContentLoaded", () => {
     const ollamaBadge = document.getElementById("ollamaBadge");
     const providerSelector = document.getElementById("providerSelector");
     const possessionPct = document.getElementById("possessionPct");
+    const jumpscareOverlay = document.getElementById("jumpscareOverlay");
+    const headerSkull = document.getElementById("headerSkull");
 
-    // Initialize Creepy Atmosphere Particles (Petals + Embers)
+    // Initialize Atmosphere
     createAtmosphereParticles();
+    spawnFloatingGhosts(4);
+    startCreepyEyesLoop();
+
+    // ==================== SOUNDBOARD CONTROLS ====================
+    const sndThunder = document.getElementById("sndThunder");
+    const sndBanshee = document.getElementById("sndBanshee");
+    const sndHeartbeat = document.getElementById("sndHeartbeat");
+    const sndCreak = document.getElementById("sndCreak");
+    const sndWhisper = document.getElementById("sndWhisper");
+    const sndStinger = document.getElementById("sndStinger");
+
+    if (sndThunder) sndThunder.addEventListener("click", () => {
+        unmuteIfNeeded();
+        if (window.spectralAudio) window.spectralAudio.playThunder();
+        triggerEMF(4);
+    });
+    if (sndBanshee) sndBanshee.addEventListener("click", () => {
+        unmuteIfNeeded();
+        if (window.spectralAudio) window.spectralAudio.playBansheeScreech();
+        triggerEMF(5);
+    });
+    if (sndHeartbeat) sndHeartbeat.addEventListener("click", () => {
+        unmuteIfNeeded();
+        if (window.spectralAudio) window.spectralAudio.playHeartbeat();
+        triggerEMF(2);
+    });
+    if (sndCreak) sndCreak.addEventListener("click", () => {
+        unmuteIfNeeded();
+        if (window.spectralAudio) window.spectralAudio.playCreak();
+        triggerEMF(3);
+    });
+    if (sndWhisper) sndWhisper.addEventListener("click", () => {
+        unmuteIfNeeded();
+        if (window.spectralAudio) window.spectralAudio.playGhostWhispers();
+        triggerEMF(3);
+    });
+    if (sndStinger) sndStinger.addEventListener("click", () => {
+        triggerJumpscare();
+    });
+
+    if (headerSkull) {
+        headerSkull.addEventListener("click", () => {
+            triggerJumpscare();
+        });
+    }
+
+    function unmuteIfNeeded() {
+        if (window.spectralAudio && window.spectralAudio.isMuted) {
+            window.spectralAudio.toggleMute();
+            updateAudioUI(true);
+        }
+    }
+
+    function updateAudioUI(unmuted) {
+        if (!audioLabel || !audioToggleBtn) return;
+        audioLabel.textContent = unmuted ? "Spectral Audio: ON" : "Spectral Audio: OFF";
+        audioToggleBtn.style.borderColor = unmuted ? "var(--accent-blood)" : "var(--border-blood)";
+        audioToggleBtn.style.boxShadow = unmuted ? "0 0 14px rgba(255, 30, 56, 0.5)" : "none";
+    }
+
+    // ==================== EMF GHOST DETECTOR ====================
+    function triggerEMF(level = 3) {
+        const pips = [
+            document.getElementById("emf1"),
+            document.getElementById("emf2"),
+            document.getElementById("emf3"),
+            document.getElementById("emf4"),
+            document.getElementById("emf5")
+        ];
+        pips.forEach((pip, idx) => {
+            if (pip) {
+                if (idx < level) {
+                    pip.className = `emf-pip active-${idx + 1}`;
+                } else {
+                    pip.className = "emf-pip";
+                }
+            }
+        });
+
+        if (window.spectralAudio) {
+            window.spectralAudio.playEMFBeep(level);
+        }
+
+        // Decay back to safe level after 2.5s
+        setTimeout(() => {
+            pips.forEach((pip, idx) => {
+                if (pip) {
+                    if (idx < 2) {
+                        pip.className = `emf-pip active-${idx + 1}`;
+                    } else {
+                        pip.className = "emf-pip";
+                    }
+                }
+            });
+        }, 2500);
+    }
+
+    // ==================== JUMPSCARE APPARITION ====================
+    function triggerJumpscare() {
+        unmuteIfNeeded();
+        if (window.spectralAudio) {
+            window.spectralAudio.playJumpscareStinger();
+            window.spectralAudio.playBansheeScreech();
+        }
+        triggerEMF(5);
+
+        if (jumpscareOverlay) {
+            jumpscareOverlay.classList.add("trigger");
+            setTimeout(() => {
+                jumpscareOverlay.classList.remove("trigger");
+            }, 420);
+        }
+    }
 
     // Random Possession Twitches
     setInterval(() => {
@@ -53,6 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
             } else if (tabId === "seance") {
                 window.spectralAudio.playEVPStatic();
                 window.spectralAudio.playGhostBreath();
+                triggerEMF(4);
             }
         }
     }
@@ -61,9 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
     audioToggleBtn.addEventListener("click", () => {
         if (!window.spectralAudio) return;
         const unmuted = window.spectralAudio.toggleMute();
-        audioLabel.textContent = unmuted ? "Spectral Audio: ON" : "Spectral Audio: OFF";
-        audioToggleBtn.style.borderColor = unmuted ? "var(--accent-blood)" : "var(--border-blood)";
-        audioToggleBtn.style.boxShadow = unmuted ? "0 0 12px rgba(255, 30, 56, 0.4)" : "none";
+        updateAudioUI(unmuted);
         if (unmuted) {
             window.spectralAudio.playGhostBreath();
             window.spectralAudio.playHeartbeat();
@@ -110,7 +229,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     async function executeTerminalCommand(cmd) {
-        // Glitch screen effect
+        // Trigger EMF spike & Glitch screen
+        triggerEMF(Math.floor(Math.random() * 2) + 4);
         const termWindow = document.querySelector(".terminal-window");
         if (termWindow) {
             termWindow.classList.add("screen-glitch");
@@ -152,7 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (window.spectralAudio) {
                 window.spectralAudio.playGhostWhisperChime();
-                if (Math.random() < 0.5) window.spectralAudio.playHeartbeat();
+                if (Math.random() < 0.4) window.spectralAudio.playHeartbeat();
             }
 
             entry.innerHTML = `
@@ -210,6 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("spotlightEra").textContent = s.era;
         document.getElementById("spotlightQuote").textContent = `"${s.quote}"`;
 
+        triggerEMF(4);
         if (window.spectralAudio) {
             window.spectralAudio.playEVPStatic();
             window.spectralAudio.playGhostBreath();
@@ -232,6 +353,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!q) return;
         seanceInput.value = "";
 
+        triggerEMF(5);
         const seanceMain = document.querySelector(".seance-main");
         if (seanceMain) {
             seanceMain.classList.add("screen-glitch");
@@ -259,6 +381,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (window.spectralAudio) {
                 window.spectralAudio.playEVPStatic();
                 window.spectralAudio.playGhostBreath();
+                if (Math.random() < 0.35) window.spectralAudio.playThunder();
             }
 
             msgDiv.innerHTML = `
@@ -409,6 +532,73 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (e) {
             ollamaBadge.innerHTML = `<span class="badge-dot" style="background:#ff1e38;"></span> Offline Fallback`;
         }
+    }
+
+    // ==================== FLOATING INTERACTIVE GHOSTS ====================
+    function spawnFloatingGhosts(count = 4) {
+        const container = document.getElementById("ghostSpectresContainer");
+        if (!container) return;
+
+        const ghostSvg = `
+            <svg viewBox="0 0 64 64" fill="none">
+                <path d="M16 32 C16 16 48 16 48 32 C48 48 44 56 40 52 C36 48 34 56 30 52 C26 48 24 56 20 52 C16 48 16 40 16 32 Z" 
+                      fill="rgba(244, 114, 182, 0.25)" stroke="rgba(244, 114, 182, 0.7)" stroke-width="1.5" />
+                <circle cx="26" cy="30" r="3.5" fill="#ff1e38" />
+                <circle cx="38" cy="30" r="3.5" fill="#ff1e38" />
+                <ellipse cx="32" cy="40" rx="3" ry="5" fill="#05060a" />
+            </svg>
+        `;
+
+        for (let i = 0; i < count; i++) {
+            const ghost = document.createElement("div");
+            ghost.className = "ghost-apparition";
+            ghost.innerHTML = ghostSvg;
+            ghost.style.left = (10 + Math.random() * 80) + "vw";
+            ghost.style.top = (15 + Math.random() * 65) + "vh";
+            ghost.style.animationDelay = (i * 2.5) + "s";
+            ghost.style.animationDuration = (12 + Math.random() * 8) + "s";
+
+            // Click or hover interaction
+            ghost.addEventListener("click", () => {
+                unmuteIfNeeded();
+                if (window.spectralAudio) {
+                    window.spectralAudio.playBansheeScreech();
+                }
+                triggerEMF(5);
+                ghost.style.transform = "scale(2.5) rotate(45deg)";
+                ghost.style.opacity = "0";
+                setTimeout(() => {
+                    ghost.style.left = Math.random() * 80 + "vw";
+                    ghost.style.top = Math.random() * 70 + "vh";
+                    ghost.style.transform = "scale(1)";
+                    ghost.style.opacity = "0.4";
+                }, 4000);
+            });
+
+            container.appendChild(ghost);
+        }
+    }
+
+    // ==================== CREEPY GLOWING EYES IN SHADOWS ====================
+    function startCreepyEyesLoop() {
+        const container = document.getElementById("creepyEyesContainer");
+        if (!container) return;
+
+        setInterval(() => {
+            const eyes = document.createElement("div");
+            eyes.className = "creepy-eyes";
+            eyes.innerHTML = `<span class="eye-orb"></span><span class="eye-orb"></span>`;
+            eyes.style.left = (5 + Math.random() * 88) + "vw";
+            eyes.style.top = (10 + Math.random() * 75) + "vh";
+            container.appendChild(eyes);
+
+            setTimeout(() => eyes.classList.add("active"), 100);
+
+            setTimeout(() => {
+                eyes.classList.remove("active");
+                setTimeout(() => eyes.remove(), 1500);
+            }, 4500);
+        }, 8500);
     }
 
     // Floating Cempasúchil Petals + Rising Embers
