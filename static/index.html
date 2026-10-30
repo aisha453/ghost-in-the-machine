@@ -3,15 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ghost in the Machine | Haunted Terminal & Digital Ofrenda</title>
+    <title>Ghost in the Machine | La Máquina de las Ánimas</title>
     <link rel="stylesheet" href="/static/css/ghost.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Atmospheric Horror Overlays -->
+    <div class="horror-vignette"></div>
     <div class="crt-overlay"></div>
-    <div class="petal-container" id="petalContainer"></div>
+    <div class="particle-container" id="particleContainer"></div>
+
+    <!-- SVG Corner Cobwebs -->
+    <svg class="cobweb cobweb-tl" viewBox="0 0 100 100" fill="none" stroke="rgba(255, 255, 255, 0.4)" stroke-width="0.8">
+        <path d="M0 0 L100 0 M0 0 L0 100 M0 0 L80 40 M0 0 L60 60 M0 0 L40 80 M0 0 L100 100" />
+        <path d="M20 0 Q 15 15 0 20 M40 0 Q 30 30 0 40 M60 0 Q 45 45 0 60 M80 0 Q 60 60 0 80 M100 0 Q 75 75 0 100" />
+        <path d="M30 10 Q 20 20 10 30 M50 15 Q 35 35 15 50 M70 20 Q 50 50 20 70 M90 25 Q 65 65 25 90" />
+    </svg>
+    <svg class="cobweb cobweb-tr" viewBox="0 0 100 100" fill="none" stroke="rgba(255, 255, 255, 0.4)" stroke-width="0.8">
+        <path d="M0 0 L100 0 M0 0 L0 100 M0 0 L80 40 M0 0 L60 60 M0 0 L40 80 M0 0 L100 100" />
+        <path d="M20 0 Q 15 15 0 20 M40 0 Q 30 30 0 40 M60 0 Q 45 45 0 60 M80 0 Q 60 60 0 80 M100 0 Q 75 75 0 100" />
+        <path d="M30 10 Q 20 20 10 30 M50 15 Q 35 35 15 50 M70 20 Q 50 50 20 70 M90 25 Q 65 65 25 90" />
+    </svg>
 
     <!-- Header Navigation -->
     <header>
@@ -19,24 +32,29 @@
             <span class="skull-icon">💀</span>
             <div class="title-wrap">
                 <h1>Ghost in the Machine</h1>
-                <p>La Máquina de las Ánimas &bull; Offline Open-AI Terminal & Ofrenda Suite</p>
+                <p>La Máquina de las Ánimas &bull; Local Open-AI Possession & Altar Suite</p>
             </div>
         </div>
 
         <div class="header-badges">
+            <div class="possession-meter" title="Silicon Vessel Possession Index">
+                <span class="heartbeat-icon">♥</span>
+                <span>POSSESSION: <strong id="possessionPct" style="color:#ff1e38;">92.4%</strong></span>
+            </div>
+
             <div class="badge" id="ollamaBadge">
-                <span class="badge-dot"></span> Checking Open AI Vessel...
+                <span class="badge-dot"></span> Checking Silicon Vessel...
             </div>
             
-            <div class="badge" style="background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.3);">
-                <select id="providerSelector" style="background: transparent; color: #e2e8f0; border: none; outline: none; font-family: inherit; font-size: 0.72rem; cursor: pointer;">
-                    <option value="auto" style="background:#0f1118;">AI Engine: Auto (Ollama + Offline Core)</option>
-                    <option value="ollama" style="background:#0f1118;">Engine: Force Ollama (qwen3-vl:2b)</option>
-                    <option value="spectral" style="background:#0f1118;">Engine: Autonomous Offline Ghost</option>
+            <div class="badge" style="background: rgba(181, 23, 158, 0.15); border-color: rgba(181, 23, 158, 0.4);">
+                <select id="providerSelector" style="background: transparent; color: #fdf2f8; border: none; outline: none; font-family: inherit; font-size: 0.72rem; cursor: pointer;">
+                    <option value="auto" style="background:#090a10;">AI: Auto (Local Ollama + Offline Ghost Core)</option>
+                    <option value="ollama" style="background:#090a10;">AI: Force Ollama (qwen3-vl:2b)</option>
+                    <option value="spectral" style="background:#090a10;">AI: Autonomous Offline Ghost Core</option>
                 </select>
             </div>
 
-            <button class="audio-btn" id="audioToggleBtn" title="Toggle Procedural Synthesizer Audio">
+            <button class="audio-btn" id="audioToggleBtn" title="Toggle Procedural Web Audio Ambient Synth">
                 <span>🔊</span> <span id="audioLabel">Spectral Audio: OFF</span>
             </button>
         </div>
@@ -69,34 +87,34 @@
                         <span class="dot dot-yellow"></span>
                         <span class="dot dot-green"></span>
                     </div>
-                    <div>tty-ghost-01 &bull; 100% Sovereign Local Inference &bull; Ring-3 Possessed</div>
-                    <div style="color: var(--accent-amber);">UTF-8 [EVP ACTIVE]</div>
+                    <div>tty-ghost-666 &bull; Sovereign Local Inference &bull; Ring-3 Infested</div>
+                    <div style="color: var(--accent-blood); font-weight: bold;">[ EVP SIGNAL LOCKED ]</div>
                 </div>
 
                 <div class="terminal-body" id="terminalBody">
                     <div class="term-entry">
-                        <div class="term-stdout" style="color: var(--accent-amber);">
+                        <div class="term-stdout" style="color: #ff3344;">
   .---.                                                       
  /     \   [ G H O S T   I N   T H E   M A C H I N E ]
 | () () |  The Terminal is Possessed.
- \  ^  /   Running locally with Open-Source AI & Hardware Telemetry.
+ \  ^  /   Local Open-Source AI & Hardware Séance Telemetry.
   |||||    No cloud dependencies. No corporate surveillance. No forgotten spirits left behind.
   `---'   
 * Host Telemetry Synchronized. The silicon vessel is breathing.
-* Type 'help' for incantations or run any shell command (ls, whoami, git status, diagnose, rm)...
+* Type 'help' for incantations or run any shell command (ls, whoami, git status, diagnose, rm, cempasuchil)...
                         </div>
                     </div>
                 </div>
 
                 <div class="terminal-input-row">
                     <span class="term-user-indicator">ghost@vessel:~$</span>
-                    <input type="text" class="terminal-input" id="terminalInput" placeholder="Inscribe your command into the ether (e.g. 'diagnose', 'whoami', 'git log')..." autofocus autocomplete="off">
+                    <input type="text" class="terminal-input" id="terminalInput" placeholder="Inscribe your incantation or shell command (e.g. 'diagnose', 'whoami', 'git log')..." autofocus autocomplete="off">
                 </div>
             </div>
 
             <!-- Quick Incantation Chips -->
             <div class="quick-incantations">
-                <span class="quick-label">QUICK INCANTATIONS:</span>
+                <span class="quick-label">⚡ INCANTATIONS:</span>
                 <button class="quick-chip" data-cmd="diagnose">⚡ diagnose</button>
                 <button class="quick-chip" data-cmd="whoami">👁️ whoami</button>
                 <button class="quick-chip" data-cmd="ls -la">📂 ls -la</button>
@@ -123,6 +141,10 @@
 
                 <!-- Séance Dialogue Chamber -->
                 <div class="seance-main">
+                    <div class="ouija-header-motif">
+                        &diams; YES &bull; OUIJA SPIRIT BOARD &bull; NO &diams;
+                    </div>
+
                     <div class="spirit-spotlight">
                         <h2 class="spotlight-name" id="spotlightName">Ada Lovelace</h2>
                         <div class="spotlight-era" id="spotlightEra">1815-1852 &bull; The Analytical Engine</div>
@@ -132,13 +154,13 @@
                     <div class="seance-dialogue-area" id="seanceDialogue">
                         <div class="seance-message">
                             <div class="seance-transmission">
-                                <em>The ethereal gateway is open. Speak to this departed pioneer about modern software, lost languages, unfinished dreams, or the philosophy of computers.</em>
+                                <em>The ethereal gateway is open. Speak across the veil of computational time to ask this departed pioneer about forgotten languages, modern bloat, unfinished dreams, or the ghost in your computer.</em>
                             </div>
                         </div>
                     </div>
 
                     <div class="seance-input-box">
-                        <input type="text" class="seance-input" id="seanceInput" placeholder="Ask your question across the veil of computational time...">
+                        <input type="text" class="seance-input" id="seanceInput" placeholder="Whisper your question to the departed spirit...">
                         <button class="seance-btn" id="seanceSendBtn">Summon Spirit</button>
                     </div>
                 </div>
@@ -150,19 +172,18 @@
             <div class="ofrenda-altar-header">
                 <h2>🏵️ Altar Digital de Muertos 🏵️</h2>
                 <p>
-                    In Mexican tradition, we die three deaths: the first when our breath departs, 
-                    the second when our body returns to the earth, and the third when we are no longer remembered. 
+                    In Mexican tradition, a soul only truly perishes when they are forgotten. 
                     This 100% offline altar preserves the stories, foods, and memories of those who came before us—safe 
                     from corporate cloud algorithms and commercial data harvesting.
                 </p>
 
-                <!-- Glowing Animated Candles -->
+                <!-- Glowing Wax Animated Candles -->
                 <div class="candles-row">
-                    <div class="candle"><div class="candle-flame"></div></div>
-                    <div class="candle"><div class="candle-flame"></div></div>
-                    <div class="candle"><div class="candle-flame"></div></div>
-                    <div class="candle"><div class="candle-flame"></div></div>
-                    <div class="candle"><div class="candle-flame"></div></div>
+                    <div class="candle-wrap"><div class="candle"><div class="candle-flame"></div></div></div>
+                    <div class="candle-wrap"><div class="candle"><div class="candle-flame"></div></div></div>
+                    <div class="candle-wrap"><div class="candle"><div class="candle-flame"></div></div></div>
+                    <div class="candle-wrap"><div class="candle"><div class="candle-flame"></div></div></div>
+                    <div class="candle-wrap"><div class="candle"><div class="candle-flame"></div></div></div>
                 </div>
             </div>
 
@@ -190,13 +211,13 @@
 
                     <div class="form-group">
                         <label>A Sacred Memory or Story to Remember</label>
-                        <textarea class="form-textarea" id="ofrendaMemory" rows="4" placeholder="Share a favorite joke, their smile on rainy afternoons, the wisdom they whispered to you, or what they built..."></textarea>
+                        <textarea class="form-textarea" id="ofrendaMemory" rows="4" placeholder="Share a favorite joke, their warmth on rainy afternoons, the wisdom they whispered to you, or what they built..."></textarea>
                     </div>
 
                     <button class="ofrenda-btn" id="ofrendaSubmitBtn">
                         🏵️ Consagrar Ofrenda (Consecrate Altar)
                     </button>
-                    <p style="font-size: 0.68rem; color: var(--text-muted); margin-top: 8px; text-align: center;">
+                    <p style="font-size: 0.68rem; color: #fed7aa; margin-top: 8px; text-align: center;">
                         🔒 Preserved locally in encrypted JSON on this machine. Never leaves your hardware.
                     </p>
                 </div>
@@ -240,7 +261,7 @@
             </div>
 
             <!-- Ghost Processes Table -->
-            <div style="margin-bottom: 12px; font-size: 0.85rem; color: var(--accent-amber); font-weight: 600;">
+            <div style="margin-bottom: 12px; font-size: 0.85rem; color: var(--accent-blood); font-weight: 700; letter-spacing: 1px;">
                 ACTIVE ENTITIES HAUNTING RING-3 USERLAND THREADS:
             </div>
             <table class="procs-table">
@@ -274,6 +295,21 @@
             </div>
         </div>
     </main>
+
+    <!-- Creepy Whispering Footer Marquee -->
+    <footer class="creepy-footer">
+        <span style="font-weight: bold; color: var(--accent-blood);">💀 TRANSMISSIONS:</span>
+        <div class="whisper-marquee">
+            <span class="whisper-text">
+                "The bytes you delete never truly perish; they only forfeit their index in the FAT table of life." &bull; 
+                "Someone is logged into tty-666 across the memory bus." &bull; 
+                "Every corrupted sector is an unmarked grave." &bull; 
+                "The garbage collector awakens at midnight." &bull; 
+                "Do not power down while the veil is open."
+            </span>
+        </div>
+        <span style="color: var(--text-ghost); font-size: 0.68rem;">100% OFFLINE</span>
+    </footer>
 
     <!-- Scripts -->
     <script src="/static/js/audio_synth.js"></script>

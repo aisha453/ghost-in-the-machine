@@ -1,5 +1,6 @@
 /**
  * Ghost in the Machine - Frontend Logic & Web Client
+ * Atmospheric Haunted Terminal, Ouija Séance, and Digital Ofrenda
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -17,9 +18,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const audioLabel = document.getElementById("audioLabel");
     const ollamaBadge = document.getElementById("ollamaBadge");
     const providerSelector = document.getElementById("providerSelector");
+    const possessionPct = document.getElementById("possessionPct");
 
-    // Initialize Petals
-    createPetals();
+    // Initialize Creepy Atmosphere Particles (Petals + Embers)
+    createAtmosphereParticles();
+
+    // Random Possession Twitches
+    setInterval(() => {
+        if (possessionPct) {
+            const val = (89.5 + Math.random() * 9.8).toFixed(1);
+            possessionPct.textContent = `${val}%`;
+            if (Math.random() < 0.25 && window.spectralAudio) {
+                window.spectralAudio.playHeartbeat();
+            }
+        }
+    }, 4500);
 
     // Setup Tabs
     document.querySelectorAll(".tab-btn").forEach(btn => {
@@ -39,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 window.spectralAudio.playAltarChime();
             } else if (tabId === "seance") {
                 window.spectralAudio.playEVPStatic();
+                window.spectralAudio.playGhostBreath();
             }
         }
     }
@@ -47,8 +61,13 @@ document.addEventListener("DOMContentLoaded", () => {
     audioToggleBtn.addEventListener("click", () => {
         if (!window.spectralAudio) return;
         const unmuted = window.spectralAudio.toggleMute();
-        audioLabel.textContent = unmuted ? "Spectral Audio: ON" : "Spectral Audio: MUTED";
-        audioToggleBtn.style.borderColor = unmuted ? "var(--accent-amber)" : "var(--border-color)";
+        audioLabel.textContent = unmuted ? "Spectral Audio: ON" : "Spectral Audio: OFF";
+        audioToggleBtn.style.borderColor = unmuted ? "var(--accent-blood)" : "var(--border-blood)";
+        audioToggleBtn.style.boxShadow = unmuted ? "0 0 12px rgba(255, 30, 56, 0.4)" : "none";
+        if (unmuted) {
+            window.spectralAudio.playGhostBreath();
+            window.spectralAudio.playHeartbeat();
+        }
     });
 
     // Setup Terminal
@@ -91,6 +110,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     async function executeTerminalCommand(cmd) {
+        // Glitch screen effect
+        const termWindow = document.querySelector(".terminal-window");
+        if (termWindow) {
+            termWindow.classList.add("screen-glitch");
+            setTimeout(() => termWindow.classList.remove("screen-glitch"), 250);
+        }
+
         const entry = document.createElement("div");
         entry.className = "term-entry";
         entry.innerHTML = `
@@ -98,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <span>ghost@vessel:~$</span>
                 <span>${escapeHtml(cmd)}</span>
             </div>
-            <div class="term-stdout" style="opacity: 0.6;">Contacting silicon registers...</div>
+            <div class="term-stdout" style="opacity: 0.6; color: var(--accent-blood);">Communing with silicon registers across ring-3...</div>
         `;
         terminalBody.appendChild(entry);
         terminalBody.scrollTop = terminalBody.scrollHeight;
@@ -106,8 +132,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (cmd.toLowerCase() === "clear" || cmd.toLowerCase() === "cls") {
             terminalBody.innerHTML = `
                 <div class="term-entry">
-                    <div class="term-stdout" style="color: var(--accent-amber);">
-* Phosphor screen purged. The ghosts wait in the shadows of the RAM.
+                    <div class="term-stdout" style="color: var(--accent-blood);">
+* Phosphor screen purged. The ghosts wait in the shadows of the L3 cache.
 * Type 'help' or any shell command to awaken them.
                     </div>
                 </div>
@@ -126,6 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (window.spectralAudio) {
                 window.spectralAudio.playGhostWhisperChime();
+                if (Math.random() < 0.5) window.spectralAudio.playHeartbeat();
             }
 
             entry.innerHTML = `
@@ -138,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="term-anchor">[ ${escapeHtml(data.hardware_anchor || "")} | Engine: ${escapeHtml(data.provider_used || "")} ]</div>
             `;
         } catch (err) {
-            entry.innerHTML += `<div class="term-stdout" style="color: var(--accent-red);">Etherial disruption: ${err.message}</div>`;
+            entry.innerHTML += `<div class="term-stdout" style="color: var(--accent-blood);">Etherial disruption: ${err.message}</div>`;
         }
         terminalBody.scrollTop = terminalBody.scrollHeight;
     }
@@ -185,6 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (window.spectralAudio) {
             window.spectralAudio.playEVPStatic();
+            window.spectralAudio.playGhostBreath();
         }
     }
 
@@ -204,11 +232,17 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!q) return;
         seanceInput.value = "";
 
+        const seanceMain = document.querySelector(".seance-main");
+        if (seanceMain) {
+            seanceMain.classList.add("screen-glitch");
+            setTimeout(() => seanceMain.classList.remove("screen-glitch"), 250);
+        }
+
         const msgDiv = document.createElement("div");
         msgDiv.className = "seance-message";
         msgDiv.innerHTML = `
             <div class="seance-user">You invoke the spirit: "${escapeHtml(q)}"</div>
-            <div class="seance-transmission" style="opacity: 0.6;">Channeling frequencies across time...</div>
+            <div class="seance-transmission" style="opacity: 0.6; color: #f472b6;">Channeling frequencies across computational time...</div>
         `;
         seanceDialogue.appendChild(msgDiv);
         seanceDialogue.scrollTop = seanceDialogue.scrollHeight;
@@ -224,6 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (window.spectralAudio) {
                 window.spectralAudio.playEVPStatic();
+                window.spectralAudio.playGhostBreath();
             }
 
             msgDiv.innerHTML = `
@@ -231,13 +266,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="seance-transmission">
                     <strong>${escapeHtml(data.spirit_name)}:</strong><br>
                     "${escapeHtml(data.spectral_transmission)}"
-                    <div style="font-size:0.7rem; color:var(--text-muted); margin-top:8px;">
-                        * Manifested via ${escapeHtml(data.provider)} at ${escapeHtml(data.manifested_at)}
+                    <div style="font-size:0.7rem; color:#c084fc; margin-top:8px;">
+                        * Manifested via ${escapeHtml(data.provider)} &bull; ${escapeHtml(data.manifested_at)}
                     </div>
                 </div>
             `;
         } catch (err) {
-            msgDiv.innerHTML += `<div style="color:var(--accent-red);">Transmission lost in static: ${err.message}</div>`;
+            msgDiv.innerHTML += `<div style="color:var(--accent-blood);">Transmission lost in static: ${err.message}</div>`;
         }
         seanceDialogue.scrollTop = seanceDialogue.scrollHeight;
     }
@@ -267,14 +302,14 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="ofrenda-card-name">${escapeHtml(item.name)}</div>
                         <div class="ofrenda-card-era">${escapeHtml(item.era)}</div>
                     </div>
-                    <div style="color: var(--accent-marigold); font-size: 1.2rem;">🕯️</div>
+                    <div style="color: var(--accent-marigold); font-size: 1.4rem; filter: drop-shadow(0 0 8px #f97316);">🕯️</div>
                 </div>
                 <div class="offerings-pills">${pills}</div>
                 <div class="ofrenda-memory">"${escapeHtml(item.memory)}"</div>
                 <div class="ofrenda-elegy">${escapeHtml(item.elegy)}</div>
-                <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 10px; display: flex; justify-content: space-between;">
-                    <span>Consecreted: ${escapeHtml(item.blessing_timestamp || "")}</span>
-                    <span>🔒 100% Private Local Storage</span>
+                <div style="font-size: 0.7rem; color: #fed7aa; margin-top: 12px; display: flex; justify-content: space-between;">
+                    <span>Consecrated: ${escapeHtml(item.blessing_timestamp || "")}</span>
+                    <span>🔒 100% Sovereign Local Storage</span>
                 </div>
             `;
             container.appendChild(card);
@@ -291,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const offerings = offeringsRaw ? offeringsRaw.split(",").map(s => s.trim()) : ["Cempasúchil flowers", "Pan de muerto", "Candlelight"];
 
             ofrendaSubmitBtn.disabled = true;
-            ofrendaSubmitBtn.textContent = "Composing Elegy & Lighting Candle...";
+            ofrendaSubmitBtn.textContent = "Composing Elegy & Lighting Flame...";
 
             try {
                 const provider = providerSelector ? providerSelector.value : "auto";
@@ -304,6 +339,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (window.spectralAudio) {
                     window.spectralAudio.playAltarChime();
+                    window.spectralAudio.playGhostWhisperChime();
                 }
 
                 // Reset inputs
@@ -348,10 +384,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 (data.processes || []).forEach(p => {
                     const tr = document.createElement("tr");
                     tr.innerHTML = `
-                        <td style="color:var(--accent-amber);">${escapeHtml(p.pid)}</td>
-                        <td>${escapeHtml(p.name)}</td>
+                        <td style="color:var(--accent-blood); font-weight:bold;">${escapeHtml(p.pid)}</td>
+                        <td style="color:#f1f5f9;">${escapeHtml(p.name)}</td>
                         <td>${escapeHtml(p.memory)}</td>
-                        <td style="color:var(--accent-violet);">${escapeHtml(p.spectral_status)}</td>
+                        <td style="color:#f472b6;">${escapeHtml(p.spectral_status)}</td>
                     `;
                     tbody.appendChild(tr);
                 });
@@ -366,29 +402,40 @@ document.addEventListener("DOMContentLoaded", () => {
             const res = await fetch("/api/ollama/status");
             const data = await res.json();
             if (data.available) {
-                ollamaBadge.innerHTML = `<span class="badge-dot" style="background:#10b981;"></span> Ollama: ${data.active_model}`;
+                ollamaBadge.innerHTML = `<span class="badge-dot" style="background:#00ff66;"></span> Ollama: ${data.active_model}`;
             } else {
-                ollamaBadge.innerHTML = `<span class="badge-dot" style="background:#f59e0b;"></span> Standalone Spectral Core`;
+                ollamaBadge.innerHTML = `<span class="badge-dot" style="background:#ff8c00;"></span> Autonomous Ghost Core`;
             }
         } catch (e) {
-            ollamaBadge.innerHTML = `<span class="badge-dot" style="background:#ef4444;"></span> Offline Fallback`;
+            ollamaBadge.innerHTML = `<span class="badge-dot" style="background:#ff1e38;"></span> Offline Fallback`;
         }
     }
 
-    // Floating Petals
-    function createPetals() {
-        const container = document.getElementById("petalContainer");
+    // Floating Cempasúchil Petals + Rising Embers
+    function createAtmosphereParticles() {
+        const container = document.getElementById("particleContainer");
         if (!container) return;
-        const count = 15;
-        for (let i = 0; i < count; i++) {
+        
+        // 12 Falling Marigold Petals
+        for (let i = 0; i < 12; i++) {
             const p = document.createElement("div");
             p.className = "petal";
             p.style.left = Math.random() * 100 + "vw";
-            p.style.animationDuration = (8 + Math.random() * 10) + "s";
-            p.style.animationDelay = (Math.random() * 8) + "s";
-            p.style.width = (10 + Math.random() * 8) + "px";
-            p.style.height = (10 + Math.random() * 8) + "px";
+            p.style.animationDuration = (7 + Math.random() * 9) + "s";
+            p.style.animationDelay = (Math.random() * 6) + "s";
             container.appendChild(p);
+        }
+
+        // 16 Rising Glowing Embers
+        for (let i = 0; i < 16; i++) {
+            const e = document.createElement("div");
+            e.className = "ember";
+            e.style.left = Math.random() * 100 + "vw";
+            e.style.animationDuration = (5 + Math.random() * 8) + "s";
+            e.style.animationDelay = (Math.random() * 6) + "s";
+            e.style.width = (3 + Math.random() * 4) + "px";
+            e.style.height = e.style.width;
+            container.appendChild(e);
         }
     }
 
