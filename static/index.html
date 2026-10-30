@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghost in the Machine | Haunted Terminal & Digital Ofrenda</title>
+    <link rel="stylesheet" href="/static/css/ghost.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="crt-overlay"></div>
+    <div class="petal-container" id="petalContainer"></div>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="logo-group">
+            <span class="skull-icon">💀</span>
+            <div class="title-wrap">
+                <h1>Ghost in the Machine</h1>
+                <p>La Máquina de las Ánimas &bull; Offline Open-AI Terminal & Ofrenda Suite</p>
+            </div>
+        </div>
+
+        <div class="header-badges">
+            <div class="badge" id="ollamaBadge">
+                <span class="badge-dot"></span> Checking Open AI Vessel...
+            </div>
+            
+            <div class="badge" style="background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.3);">
+                <select id="providerSelector" style="background: transparent; color: #e2e8f0; border: none; outline: none; font-family: inherit; font-size: 0.72rem; cursor: pointer;">
+                    <option value="auto" style="background:#0f1118;">AI Engine: Auto (Ollama + Offline Core)</option>
+                    <option value="ollama" style="background:#0f1118;">Engine: Force Ollama (qwen3-vl:2b)</option>
+                    <option value="spectral" style="background:#0f1118;">Engine: Autonomous Offline Ghost</option>
+                </select>
+            </div>
+
+            <button class="audio-btn" id="audioToggleBtn" title="Toggle Procedural Synthesizer Audio">
+                <span>🔊</span> <span id="audioLabel">Spectral Audio: OFF</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+        <button class="tab-btn active" data-tab="terminal">
+            <span>📟</span> [ 1 ] THE HAUNTED TERMINAL
+        </button>
+        <button class="tab-btn" data-tab="seance">
+            <span>🔮</span> [ 2 ] THE SÉANCE CHAMBER
+        </button>
+        <button class="tab-btn" data-tab="ofrenda">
+            <span>🏵️</span> [ 3 ] DÍA DE LOS MUERTOS OFRENDA
+        </button>
+        <button class="tab-btn" data-tab="oracle">
+            <span>⚡</span> [ 4 ] SILICON VITALS & MANIFESTO
+        </button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main>
+        <!-- ==================== TAB 1: HAUNTED TERMINAL ==================== -->
+        <div class="tab-pane active" id="terminalPane">
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="window-dots">
+                        <span class="dot dot-red"></span>
+                        <span class="dot dot-yellow"></span>
+                        <span class="dot dot-green"></span>
+                    </div>
+                    <div>tty-ghost-01 &bull; 100% Sovereign Local Inference &bull; Ring-3 Possessed</div>
+                    <div style="color: var(--accent-amber);">UTF-8 [EVP ACTIVE]</div>
+                </div>
+
+                <div class="terminal-body" id="terminalBody">
+                    <div class="term-entry">
+                        <div class="term-stdout" style="color: var(--accent-amber);">
+  .---.                                                       
+ /     \   [ G H O S T   I N   T H E   M A C H I N E ]
+| () () |  The Terminal is Possessed.
+ \  ^  /   Running locally with Open-Source AI & Hardware Telemetry.
+  |||||    No cloud dependencies. No corporate surveillance. No forgotten spirits left behind.
+  `---'   
+* Host Telemetry Synchronized. The silicon vessel is breathing.
+* Type 'help' for incantations or run any shell command (ls, whoami, git status, diagnose, rm)...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="terminal-input-row">
+                    <span class="term-user-indicator">ghost@vessel:~$</span>
+                    <input type="text" class="terminal-input" id="terminalInput" placeholder="Inscribe your command into the ether (e.g. 'diagnose', 'whoami', 'git log')..." autofocus autocomplete="off">
+                </div>
+            </div>
+
+            <!-- Quick Incantation Chips -->
+            <div class="quick-incantations">
+                <span class="quick-label">QUICK INCANTATIONS:</span>
+                <button class="quick-chip" data-cmd="diagnose">⚡ diagnose</button>
+                <button class="quick-chip" data-cmd="whoami">👁️ whoami</button>
+                <button class="quick-chip" data-cmd="ls -la">📂 ls -la</button>
+                <button class="quick-chip" data-cmd="git status">🌿 git status</button>
+                <button class="quick-chip" data-cmd="cat memory_graves.txt">📜 cat memory_graves.txt</button>
+                <button class="quick-chip" data-cmd="rm -rf /fears">🔥 rm -rf /fears</button>
+                <button class="quick-chip" data-cmd="cempasuchil">🏵️ cempasúchil</button>
+                <button class="quick-chip" data-cmd="clear">🧹 clear</button>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 2: SÉANCE CHAMBER ==================== -->
+        <div class="tab-pane" id="seancePane">
+            <div class="seance-grid">
+                <!-- Spirits Sidebar -->
+                <div class="spirits-sidebar">
+                    <div class="sidebar-title">
+                        <span>🔮</span> SUMMON A DEPARTED PIONEER
+                    </div>
+                    <div id="spiritsList">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Séance Dialogue Chamber -->
+                <div class="seance-main">
+                    <div class="spirit-spotlight">
+                        <h2 class="spotlight-name" id="spotlightName">Ada Lovelace</h2>
+                        <div class="spotlight-era" id="spotlightEra">1815-1852 &bull; The Analytical Engine</div>
+                        <div class="spotlight-quote" id="spotlightQuote">"The Analytical Engine weaves algebraical patterns just as the Jacquard-loom weaves flowers and leaves."</div>
+                    </div>
+
+                    <div class="seance-dialogue-area" id="seanceDialogue">
+                        <div class="seance-message">
+                            <div class="seance-transmission">
+                                <em>The ethereal gateway is open. Speak to this departed pioneer about modern software, lost languages, unfinished dreams, or the philosophy of computers.</em>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="seance-input-box">
+                        <input type="text" class="seance-input" id="seanceInput" placeholder="Ask your question across the veil of computational time...">
+                        <button class="seance-btn" id="seanceSendBtn">Summon Spirit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 3: DÍA DE LOS MUERTOS OFRENDA ==================== -->
+        <div class="tab-pane" id="ofrendaPane">
+            <div class="ofrenda-altar-header">
+                <h2>🏵️ Altar Digital de Muertos 🏵️</h2>
+                <p>
+                    In Mexican tradition, we die three deaths: the first when our breath departs, 
+                    the second when our body returns to the earth, and the third when we are no longer remembered. 
+                    This 100% offline altar preserves the stories, foods, and memories of those who came before us—safe 
+                    from corporate cloud algorithms and commercial data harvesting.
+                </p>
+
+                <!-- Glowing Animated Candles -->
+                <div class="candles-row">
+                    <div class="candle"><div class="candle-flame"></div></div>
+                    <div class="candle"><div class="candle-flame"></div></div>
+                    <div class="candle"><div class="candle-flame"></div></div>
+                    <div class="candle"><div class="candle-flame"></div></div>
+                    <div class="candle"><div class="candle-flame"></div></div>
+                </div>
+            </div>
+
+            <div class="ofrenda-split">
+                <!-- Ofrenda Dedication Form -->
+                <div class="ofrenda-form-card">
+                    <div class="ofrenda-form-title">
+                        <span>🕯️</span> DEDICATE A SACRED OFFERING
+                    </div>
+
+                    <div class="form-group">
+                        <label>Name of Loved One, Mentor, or Ancestor</label>
+                        <input type="text" class="form-input" id="ofrendaName" placeholder="e.g., Abuela Elena, Dennis Ritchie, Alan Turing">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Years or Era of Life</label>
+                        <input type="text" class="form-input" id="ofrendaEra" placeholder="e.g., 1941 - 2021, or Golden Age of Computing">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Offerings Placed on Altar (Comma-separated)</label>
+                        <input type="text" class="form-input" id="ofrendaOfferings" placeholder="Pan de Muerto, Café de olla, Cempasúchil, Jazz records, Tamales">
+                    </div>
+
+                    <div class="form-group">
+                        <label>A Sacred Memory or Story to Remember</label>
+                        <textarea class="form-textarea" id="ofrendaMemory" rows="4" placeholder="Share a favorite joke, their smile on rainy afternoons, the wisdom they whispered to you, or what they built..."></textarea>
+                    </div>
+
+                    <button class="ofrenda-btn" id="ofrendaSubmitBtn">
+                        🏵️ Consagrar Ofrenda (Consecrate Altar)
+                    </button>
+                    <p style="font-size: 0.68rem; color: var(--text-muted); margin-top: 8px; text-align: center;">
+                        🔒 Preserved locally in encrypted JSON on this machine. Never leaves your hardware.
+                    </p>
+                </div>
+
+                <!-- Preserved Ofrendas Gallery -->
+                <div class="ofrendas-gallery" id="ofrendasGallery">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 4: SILICON VITALS & MANIFESTO ==================== -->
+        <div class="tab-pane" id="oraclePane">
+            <!-- Hardware Gauges -->
+            <div class="vitals-grid">
+                <div class="vital-card">
+                    <div class="vital-title">Silicon Vessel Host</div>
+                    <div class="vital-metric" id="vitalsHostname">KIIT2226</div>
+                    <div class="vital-subtext" id="vitalsPlatform">Windows Architecture</div>
+                </div>
+
+                <div class="vital-card">
+                    <div class="vital-title">Spirit Nerve Threads (CPU)</div>
+                    <div class="vital-metric" id="vitalsCpu">16 Cores</div>
+                    <div class="vital-subtext">Silicon processing clock active</div>
+                </div>
+
+                <div class="vital-card">
+                    <div class="vital-title">Physical Memory Burden</div>
+                    <div class="vital-metric" id="vitalsMem">60%</div>
+                    <div class="meter-bar"><div class="meter-fill" id="memMeterFill" style="width: 60%;"></div></div>
+                    <div class="vital-subtext" style="margin-top: 6px;">Living memory allocated</div>
+                </div>
+
+                <div class="vital-card">
+                    <div class="vital-title">Storage Crypt & Void</div>
+                    <div class="vital-metric" id="vitalsDisk">250 GB</div>
+                    <div class="meter-bar"><div class="meter-fill" id="diskMeterFill" style="width: 56%;"></div></div>
+                    <div class="vital-subtext" style="margin-top: 6px;">Remaining magnetic capacity</div>
+                </div>
+            </div>
+
+            <!-- Ghost Processes Table -->
+            <div style="margin-bottom: 12px; font-size: 0.85rem; color: var(--accent-amber); font-weight: 600;">
+                ACTIVE ENTITIES HAUNTING RING-3 USERLAND THREADS:
+            </div>
+            <table class="procs-table">
+                <thead>
+                    <tr>
+                        <th>PID</th>
+                        <th>Process Entity</th>
+                        <th>Working Set RAM</th>
+                        <th>Spectral Behavior</th>
+                    </tr>
+                </thead>
+                <tbody id="ghostProcsBody">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+
+            <!-- Hackathon Manifesto Card -->
+            <div class="open-manifesto-card">
+                <h3 class="manifesto-title">Why Open Innovation Matters for "Ghost in the Machine"</h3>
+                <div class="manifesto-body">
+                    <p>
+                        <strong>1. Sovereign Memory & Sacred Privacy:</strong> In Día de los Muertos, remembering our ancestors is an intimate, sacred act of devotion. When you record memories of your departed grandparents or mentors, sending their personal stories, photos, and grief to a closed corporate cloud model means your family's history becomes training data for proprietary advertising engines. By running local open-weight AI (Ollama with Qwen, Llama, or Mistral), your loved ones' memories remain sovereign and eternal inside your home.
+                    </p>
+                    <p>
+                        <strong>2. Complete Offline Resilience (The Internet-Off Test):</strong> When storms rage, power flickers, or the internet cuts out on Halloween night, closed AI APIs return <code>HTTP 503 Service Unavailable</code>. <em>Ghost in the Machine</em> operates 100% offline. From procedural Web Audio synthesis to local model weights, the spirits continue whispering on a laptop in a cabin in the woods with zero Wi-Fi.
+                    </p>
+                    <p>
+                        <strong>3. Zero Running Cost & Permanent Longevity:</strong> Proprietary APIs deprecate endpoints, change prices, and cancel services on corporate whims. Open-source software and open-weight models belong to humanity. The code and models you run tonight will still execute twenty years from now, ensuring your memorials never disappear behind an expired credit card or a shutdown notice.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="/static/js/audio_synth.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

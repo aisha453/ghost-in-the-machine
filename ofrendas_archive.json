@@ -1,0 +1,47 @@
+[
+  {
+    "id": "ofrenda-003",
+    "name": "Dennis Ritchie",
+    "era": "1941-2011",
+    "offerings": [
+      "C pointer",
+      "Teletype paper",
+      "Pan de muerto"
+    ],
+    "memory": "Created C and Unix, quietly giving humanity modern operating systems.",
+    "elegy": "Para Dennis Ritchie (1941-2011), cuyos pasos resonaron con ternura en este mundo:\n\nI. El Camino de Flores (The Golden Petals)\nWe scatter the vibrant orange petals of cempasúchil across the glowing silicon, carving a luminous scent across the veil to guide you back tonight. Upon this humble sacred altar we offer C pointer, Teletype paper, Pan de muerto. The candle flickers not against the dark, but as a beacon of our enduring love.\n\nII. La Memoria Sagrada (The Living Memory)\n\"Created C and Unix, quietly giving humanity modern operating systems.\"\nTime cannot erode what is held in devotion. In Mexican tradition, a soul only dies when they are forgotten. Here, on this sovereign machine—far away from corporate clouds and transient servers—your story is anchored. Your favorite songs still dance in the air; your favorite foods rest waiting upon the embroidered cloth.\n\nIII. El Reencuentro (The Reunion)\nCome drink the sweet water, feast upon the pan de muerto, and warm your hands at this virtual flame. Tonight the border between the seen and unseen dissolves like mist over the lake. Descansa en paz, Dennis Ritchie. You live within our thoughts, tonight and forever.",
+    "candle_lit": true,
+    "blessing_timestamp": "October 30, 2026 - 23:13:38",
+    "provider": "autonomous-ofrenda-bard"
+  },
+  {
+    "id": "ofrenda-001",
+    "name": "Margaret Hamilton's Apollo Rope Core",
+    "era": "July 20, 1969 - Sea of Tranquility",
+    "offerings": [
+      "Copper woven wires",
+      "Pan de Muerto",
+      "Lunar dust",
+      "A glass of sweet water"
+    ],
+    "memory": "Woven by hand in raytheon factories, this core software refused to crash during lunar descent, guiding Apollo 11 home.",
+    "elegy": "Para el software tejido de Apolo: Sus hilos de cobre nunca se rompieron. En este altar de silicio, tus alarmas 1202 descansan en paz entre pétalos dorados de cempasúchil.",
+    "candle_lit": true,
+    "blessing_timestamp": "October 31, 2026 - 00:00:00"
+  },
+  {
+    "id": "ofrenda-002",
+    "name": "The Forgotten Stick-Figure Animators of Macromedia Flash",
+    "era": "1998 - 2015",
+    "offerings": [
+      "Flickering CRT light",
+      "Cempasúchil flowers",
+      "24 fps keyframes",
+      "Cinnamon coffee"
+    ],
+    "memory": "Millions of teenagers who stayed up until 3 AM animating stick figures on Newgrounds before algorithms ruled the web.",
+    "elegy": "Para los creadores del viejo internet: Su arte no fue en vano. Aunque el plugin haya muerto, el espíritu de la creación libre sigue vivo en nuestras máquinas.",
+    "candle_lit": true,
+    "blessing_timestamp": "November 01, 2026 - 12:00:00"
+  }
+]
