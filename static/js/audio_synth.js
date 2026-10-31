@@ -2,16 +2,14 @@
  * Ghost in the Machine - Advanced Procedural Web Audio Synthesizer
  * 100% Offline, Zero external audio assets required.
  * Synthesizes: 
- * - Banshee Howl / Screech
+ * - Thunderclap & Low Rolling Rumble
+ * - Terrifying Banshee Howl / Screech
+ * - Heavy Sub-Bass Heartbeat Pulse (Lub-Dub)
+ * - Ancient Coffin / Floorboard Creak
+ * - EVP Ghost Whispering Murmurs
  * - Jumpscare Metallic Stinger
- * - Deep Thunderclap & Rumble
- * - Coffin / Floorboard Creak
- * - Ghost Whisper Murmurs
- * - Heartbeat (Lub-Dub)
- * - EMF Ghost Meter Clicks
- * - Ambient Dissonant Drones (43Hz)
- * - EVP Radio Static
- * - Altar Temple Bells
+ * - Electro-Magnetic Field (EMF) Geiger Clicks
+ * - Ambient Dissonant Drone (43Hz)
  */
 
 class SpectralAudioEngine {
@@ -25,35 +23,38 @@ class SpectralAudioEngine {
         this.ambientSpookTimer = null;
     }
 
-    init() {
-        if (this.ctx) return;
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        this.ctx = new AudioContext();
+    ensureContext() {
+        if (!this.ctx) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
+        return this.ctx;
     }
 
     startDrone() {
-        if (!this.ctx) this.init();
+        const ctx = this.ensureContext();
         if (this.droneOsc1) return;
 
         try {
-            // Ethereal low-frequency ambient drone (43Hz and 47Hz binaural beat with eerie dissonance)
-            this.droneGain = this.ctx.createGain();
-            this.droneGain.gain.setValueAtTime(this.isMuted ? 0 : 0.07, this.ctx.currentTime);
-            this.droneGain.connect(this.ctx.destination);
+            this.droneGain = ctx.createGain();
+            this.droneGain.gain.setValueAtTime(this.isMuted ? 0 : 0.08, ctx.currentTime);
+            this.droneGain.connect(ctx.destination);
 
-            this.droneOsc1 = this.ctx.createOscillator();
+            this.droneOsc1 = ctx.createOscillator();
             this.droneOsc1.type = 'sawtooth';
-            this.droneOsc1.frequency.setValueAtTime(43.0, this.ctx.currentTime);
+            this.droneOsc1.frequency.setValueAtTime(43.0, ctx.currentTime);
 
-            this.droneOsc2 = this.ctx.createOscillator();
+            this.droneOsc2 = ctx.createOscillator();
             this.droneOsc2.type = 'sine';
-            this.droneOsc2.frequency.setValueAtTime(47.2, this.ctx.currentTime);
+            this.droneOsc2.frequency.setValueAtTime(47.2, ctx.currentTime);
 
-            // Subtle eerie resonance filter
-            const filter = this.ctx.createBiquadFilter();
+            const filter = ctx.createBiquadFilter();
             filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(120, this.ctx.currentTime);
-            filter.Q.setValueAtTime(4.5, this.ctx.currentTime);
+            filter.frequency.setValueAtTime(130, ctx.currentTime);
+            filter.Q.setValueAtTime(4.0, ctx.currentTime);
 
             this.droneOsc1.connect(filter);
             this.droneOsc2.connect(filter);
@@ -70,18 +71,27 @@ class SpectralAudioEngine {
     }
 
     toggleMute() {
-        if (!this.ctx) this.init();
-        if (this.ctx.state === 'suspended') {
-            this.ctx.resume();
-        }
+        const ctx = this.ensureContext();
         this.isMuted = !this.isMuted;
+        
         if (!this.isMuted && !this.droneOsc1) {
             this.startDrone();
         }
         if (this.droneGain) {
-            this.droneGain.gain.setTargetAtTime(this.isMuted ? 0 : 0.07, this.ctx.currentTime, 0.2);
+            this.droneGain.gain.setTargetAtTime(this.isMuted ? 0 : 0.08, ctx.currentTime, 0.15);
         }
         return !this.isMuted;
+    }
+
+    unmute() {
+        const ctx = this.ensureContext();
+        this.isMuted = false;
+        if (!this.droneOsc1) {
+            this.startDrone();
+        }
+        if (this.droneGain) {
+            this.droneGain.gain.setTargetAtTime(0.08, ctx.currentTime, 0.15);
+        }
     }
 
     startHeartbeatLoop() {
@@ -98,274 +108,328 @@ class SpectralAudioEngine {
         this.ambientSpookTimer = setInterval(() => {
             if (this.isMuted) return;
             const roll = Math.random();
-            if (roll < 0.2) {
+            if (roll < 0.25) {
                 this.playGhostBreath();
-            } else if (roll < 0.35) {
+            } else if (roll < 0.45) {
                 this.playCreak();
-            } else if (roll < 0.48) {
+            } else if (roll < 0.65) {
                 this.playGhostWhispers();
-            } else if (roll < 0.55) {
-                this.playEMFBeep(4);
             }
-        }, 9000);
+        }, 9500);
     }
 
-    // 1. Terrifying Banshee Screech / Howl
-    playBansheeScreech() {
-        if (this.isMuted || !this.ctx) return;
-        try {
-            const now = this.ctx.currentTime;
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            const filter = this.ctx.createBiquadFilter();
-
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(450, now);
-            osc.frequency.exponentialRampToValueAtTime(1400, now + 0.35);
-            osc.frequency.exponentialRampToValueAtTime(280, now + 1.2);
-
-            filter.type = 'bandpass';
-            filter.frequency.setValueAtTime(800, now);
-            filter.frequency.exponentialRampToValueAtTime(2200, now + 0.4);
-            filter.frequency.exponentialRampToValueAtTime(400, now + 1.2);
-            filter.Q.setValueAtTime(6.0, now);
-
-            gain.gain.setValueAtTime(0.001, now);
-            gain.gain.linearRampToValueAtTime(0.18, now + 0.25);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.3);
-
-            osc.connect(filter);
-            filter.connect(gain);
-            gain.connect(this.ctx.destination);
-
-            osc.start(now);
-            osc.stop(now + 1.35);
-        } catch (e) {}
-    }
-
-    // 2. Jumpscare Stinger (Sharp metallic dissonant impact)
-    playJumpscareStinger() {
-        if (this.isMuted || !this.ctx) return;
-        try {
-            const now = this.ctx.currentTime;
-            
-            // White noise burst
-            const bufferSize = this.ctx.sampleRate * 0.4;
-            const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-            const noise = this.ctx.createBufferSource();
-            noise.buffer = buffer;
-
-            const noiseGain = this.ctx.createGain();
-            noiseGain.gain.setValueAtTime(0.3, now);
-            noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-
-            noise.connect(noiseGain);
-            noiseGain.connect(this.ctx.destination);
-            noise.start(now);
-
-            // Dissonant minor cluster chords (C4, C#4, F#4, G4)
-            const freqs = [261.63, 277.18, 369.99, 392.00, 554.37];
-            freqs.forEach(f => {
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(f, now);
-                osc.frequency.exponentialRampToValueAtTime(f * 0.7, now + 0.6);
-
-                gain.gain.setValueAtTime(0.08, now);
-                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.8);
-
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.85);
-            });
-        } catch (e) {}
-    }
-
-    // 3. Deep Thunderclap & Rolling Rumble
+    // 1. Deep Thunderclap & Rolling Rumble
     playThunder() {
-        if (this.isMuted || !this.ctx) return;
+        const ctx = this.ensureContext();
         try {
-            const now = this.ctx.currentTime;
-            const bufferSize = this.ctx.sampleRate * 2.2;
-            const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+            const now = ctx.currentTime;
+            
+            // 1. Sharp lightning crack (high-pass noise)
+            const bufferSize = ctx.sampleRate * 2.8;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
             const data = buffer.getChannelData(0);
             for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
 
-            const noise = this.ctx.createBufferSource();
+            const noise = ctx.createBufferSource();
             noise.buffer = buffer;
 
-            const filter = this.ctx.createBiquadFilter();
+            const filter = ctx.createBiquadFilter();
             filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(350, now);
-            filter.frequency.exponentialRampToValueAtTime(70, now + 2.0);
+            filter.frequency.setValueAtTime(450, now);
+            filter.frequency.exponentialRampToValueAtTime(60, now + 2.5);
 
-            const gain = this.ctx.createGain();
-            gain.gain.setValueAtTime(0.001, now);
-            gain.gain.linearRampToValueAtTime(0.28, now + 0.06); // sharp crack
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.2); // long rumble
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(0.01, now);
+            gain.gain.linearRampToValueAtTime(0.45, now + 0.04); // explosive crack
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.8); // low rumble
 
             noise.connect(filter);
             filter.connect(gain);
-            gain.connect(this.ctx.destination);
-
+            gain.connect(ctx.destination);
             noise.start(now);
-        } catch (e) {}
+
+            // 2. Sub-bass boom
+            const sub = ctx.createOscillator();
+            const subGain = ctx.createGain();
+            sub.type = 'sine';
+            sub.frequency.setValueAtTime(110, now);
+            sub.frequency.exponentialRampToValueAtTime(32, now + 1.2);
+
+            subGain.gain.setValueAtTime(0.4, now);
+            subGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.8);
+
+            sub.connect(subGain);
+            subGain.connect(ctx.destination);
+            sub.start(now);
+            sub.stop(now + 1.85);
+        } catch (e) {
+            console.error("Thunder sound error:", e);
+        }
+    }
+
+    // 2. Terrifying Banshee Screech / Howl
+    playBansheeScreech() {
+        const ctx = this.ensureContext();
+        try {
+            const now = ctx.currentTime;
+            
+            // Primary Screech Oscillator
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            const filter = ctx.createBiquadFilter();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(420, now);
+            osc.frequency.exponentialRampToValueAtTime(1600, now + 0.35);
+            osc.frequency.exponentialRampToValueAtTime(280, now + 1.3);
+
+            // Vibrato LFO
+            const lfo = ctx.createOscillator();
+            const lfoGain = ctx.createGain();
+            lfo.frequency.setValueAtTime(14, now); // 14Hz eerie vibrato
+            lfoGain.gain.setValueAtTime(120, now);
+            lfo.connect(osc.frequency);
+            lfo.start(now);
+            lfo.stop(now + 1.4);
+
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(900, now);
+            filter.frequency.exponentialRampToValueAtTime(2400, now + 0.4);
+            filter.frequency.exponentialRampToValueAtTime(350, now + 1.3);
+            filter.Q.setValueAtTime(5.0, now);
+
+            gain.gain.setValueAtTime(0.01, now);
+            gain.gain.linearRampToValueAtTime(0.35, now + 0.2);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.4);
+
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start(now);
+            osc.stop(now + 1.45);
+        } catch (e) {
+            console.error("Banshee sound error:", e);
+        }
+    }
+
+    // 3. Heavy Sub-Bass Heartbeat Pulse (Lub-Dub)
+    playHeartbeat() {
+        const ctx = this.ensureContext();
+        try {
+            const now = ctx.currentTime;
+            
+            // Lub (First beat)
+            const osc1 = ctx.createOscillator();
+            const gain1 = ctx.createGain();
+            osc1.type = 'sine';
+            osc1.frequency.setValueAtTime(75, now);
+            osc1.frequency.exponentialRampToValueAtTime(32, now + 0.14);
+            
+            gain1.gain.setValueAtTime(0.45, now);
+            gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+            
+            osc1.connect(gain1);
+            gain1.connect(ctx.destination);
+            osc1.start(now);
+            osc1.stop(now + 0.18);
+
+            // Dub (Second beat, 180ms later)
+            const osc2 = ctx.createOscillator();
+            const gain2 = ctx.createGain();
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(62, now + 0.18);
+            osc2.frequency.exponentialRampToValueAtTime(28, now + 0.35);
+            
+            gain2.gain.setValueAtTime(0.35, now + 0.18);
+            gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.38);
+            
+            osc2.connect(gain2);
+            gain2.connect(ctx.destination);
+            osc2.start(now + 0.18);
+            osc2.stop(now + 0.4);
+        } catch (e) {
+            console.error("Heartbeat error:", e);
+        }
     }
 
     // 4. Coffin / Floorboard Creak
     playCreak() {
-        if (this.isMuted || !this.ctx) return;
+        const ctx = this.ensureContext();
         try {
-            const now = this.ctx.currentTime;
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
+            const now = ctx.currentTime;
+            
+            // FM Synthesis for wood splintering groan
+            const carrier = ctx.createOscillator();
+            const modulator = ctx.createOscillator();
+            const modGain = ctx.createGain();
+            const masterGain = ctx.createGain();
+            const filter = ctx.createBiquadFilter();
 
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(110, now);
-            osc.frequency.linearRampToValueAtTime(180, now + 0.2);
-            osc.frequency.linearRampToValueAtTime(90, now + 0.5);
-            osc.frequency.linearRampToValueAtTime(220, now + 0.75);
+            carrier.type = 'sawtooth';
+            carrier.frequency.setValueAtTime(120, now);
+            carrier.frequency.linearRampToValueAtTime(210, now + 0.3);
+            carrier.frequency.linearRampToValueAtTime(95, now + 0.6);
+            carrier.frequency.linearRampToValueAtTime(260, now + 0.9);
 
-            gain.gain.setValueAtTime(0.001, now);
-            gain.gain.linearRampToValueAtTime(0.04, now + 0.1);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.8);
+            modulator.type = 'square';
+            modulator.frequency.setValueAtTime(24, now);
+            modGain.gain.setValueAtTime(70, now);
+            modulator.connect(modGain);
+            modGain.connect(carrier.frequency);
 
-            const filter = this.ctx.createBiquadFilter();
             filter.type = 'bandpass';
-            filter.frequency.setValueAtTime(320, now);
-            filter.Q.setValueAtTime(5.0, now);
+            filter.frequency.setValueAtTime(360, now);
+            filter.Q.setValueAtTime(6.0, now);
 
-            osc.connect(filter);
-            filter.connect(gain);
-            gain.connect(this.ctx.destination);
+            masterGain.gain.setValueAtTime(0.01, now);
+            masterGain.gain.linearRampToValueAtTime(0.22, now + 0.15);
+            masterGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.95);
 
-            osc.start(now);
-            osc.stop(now + 0.85);
-        } catch (e) {}
+            carrier.connect(filter);
+            filter.connect(masterGain);
+            masterGain.connect(ctx.destination);
+
+            modulator.start(now);
+            carrier.start(now);
+            modulator.stop(now + 1.0);
+            carrier.stop(now + 1.0);
+        } catch (e) {
+            console.error("Creak sound error:", e);
+        }
     }
 
     // 5. Ghost Whispering Murmurs
     playGhostWhispers() {
-        if (this.isMuted || !this.ctx) return;
+        const ctx = this.ensureContext();
         try {
-            const now = this.ctx.currentTime;
-            const bufferSize = this.ctx.sampleRate * 1.5;
-            const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+            const now = ctx.currentTime;
+            const bufferSize = ctx.sampleRate * 1.8;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
             const data = buffer.getChannelData(0);
             for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
 
-            const noise = this.ctx.createBufferSource();
+            const noise = ctx.createBufferSource();
             noise.buffer = buffer;
 
-            // Formant bandpass mimics human whispering frequencies (vowels)
-            const filter1 = this.ctx.createBiquadFilter();
-            filter1.type = 'bandpass';
-            filter1.frequency.setValueAtTime(500, now);
-            filter1.frequency.linearRampToValueAtTime(1200, now + 0.7);
-            filter1.frequency.linearRampToValueAtTime(600, now + 1.4);
-            filter1.Q.setValueAtTime(8.0, now);
+            // Formant bandpass mimics human whispering frequencies
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(450, now);
+            filter.frequency.linearRampToValueAtTime(1400, now + 0.6);
+            filter.frequency.linearRampToValueAtTime(550, now + 1.2);
+            filter.frequency.linearRampToValueAtTime(1100, now + 1.7);
+            filter.Q.setValueAtTime(7.0, now);
 
-            const gain = this.ctx.createGain();
-            gain.gain.setValueAtTime(0.001, now);
-            gain.gain.linearRampToValueAtTime(0.06, now + 0.4);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.5);
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(0.01, now);
+            gain.gain.linearRampToValueAtTime(0.25, now + 0.4);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.8);
 
-            noise.connect(filter1);
-            filter1.connect(gain);
-            gain.connect(this.ctx.destination);
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
 
             noise.start(now);
-        } catch (e) {}
+        } catch (e) {
+            console.error("Whisper sound error:", e);
+        }
     }
 
-    // 6. EMF Meter Clicks (Geiger-counter clicks)
+    // 6. Jumpscare Stinger (Sharp metallic dissonant impact)
+    playJumpscareStinger() {
+        const ctx = this.ensureContext();
+        try {
+            const now = ctx.currentTime;
+            
+            // White noise impact burst
+            const bufferSize = ctx.sampleRate * 0.45;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+            const noise = ctx.createBufferSource();
+            noise.buffer = buffer;
+
+            const noiseGain = ctx.createGain();
+            noiseGain.gain.setValueAtTime(0.4, now);
+            noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+            noise.connect(noiseGain);
+            noiseGain.connect(ctx.destination);
+            noise.start(now);
+
+            // Dissonant minor cluster chords (C4, C#4, F#4, G4, B4)
+            const freqs = [261.63, 277.18, 369.99, 392.00, 493.88];
+            freqs.forEach(f => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(f, now);
+                osc.frequency.exponentialRampToValueAtTime(f * 0.65, now + 0.7);
+
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.85);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.9);
+            });
+        } catch (e) {
+            console.error("Jumpscare stinger error:", e);
+        }
+    }
+
+    // 7. EMF Meter Clicks (Geiger counter pulses)
     playEMFBeep(level = 3) {
-        if (this.isMuted || !this.ctx) return;
+        const ctx = this.ensureContext();
         try {
             const count = Math.min(level * 2, 8);
             for (let i = 0; i < count; i++) {
-                const clickTime = this.ctx.currentTime + (i * 0.05) + (Math.random() * 0.03);
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
+                const clickTime = ctx.currentTime + (i * 0.04) + (Math.random() * 0.02);
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
 
                 osc.type = 'square';
-                osc.frequency.setValueAtTime(1800 + Math.random() * 600, clickTime);
+                osc.frequency.setValueAtTime(1900 + Math.random() * 600, clickTime);
 
-                gain.gain.setValueAtTime(0.03, clickTime);
-                gain.gain.exponentialRampToValueAtTime(0.0001, clickTime + 0.015);
+                gain.gain.setValueAtTime(0.06, clickTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, clickTime + 0.02);
 
                 osc.connect(gain);
-                gain.connect(this.ctx.destination);
+                gain.connect(ctx.destination);
 
                 osc.start(clickTime);
-                osc.stop(clickTime + 0.02);
+                osc.stop(clickTime + 0.025);
             }
         } catch (e) {}
     }
 
-    playHeartbeat() {
-        if (this.isMuted || !this.ctx) return;
-        try {
-            const now = this.ctx.currentTime;
-            
-            // Lub
-            const osc1 = this.ctx.createOscillator();
-            const gain1 = this.ctx.createGain();
-            osc1.type = 'sine';
-            osc1.frequency.setValueAtTime(65, now);
-            osc1.frequency.exponentialRampToValueAtTime(32, now + 0.13);
-            gain1.gain.setValueAtTime(0.14, now);
-            gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
-            osc1.connect(gain1);
-            gain1.connect(this.ctx.destination);
-            osc1.start(now);
-            osc1.stop(now + 0.17);
-
-            // Dub (190ms later)
-            const osc2 = this.ctx.createOscillator();
-            const gain2 = this.ctx.createGain();
-            osc2.type = 'sine';
-            osc2.frequency.setValueAtTime(55, now + 0.19);
-            osc2.frequency.exponentialRampToValueAtTime(28, now + 0.34);
-            gain2.gain.setValueAtTime(0.10, now + 0.19);
-            gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.36);
-            osc2.connect(gain2);
-            gain2.connect(this.ctx.destination);
-            osc2.start(now + 0.19);
-            osc2.stop(now + 0.38);
-        } catch (e) {}
-    }
-
     playGhostBreath() {
-        if (this.isMuted || !this.ctx) return;
+        const ctx = this.ensureContext();
         try {
-            const bufferSize = this.ctx.sampleRate * 0.9;
-            const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+            const bufferSize = ctx.sampleRate * 0.9;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
             const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.45;
+            for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.5;
 
-            const noise = this.ctx.createBufferSource();
+            const noise = ctx.createBufferSource();
             noise.buffer = buffer;
 
-            const filter = this.ctx.createBiquadFilter();
+            const filter = ctx.createBiquadFilter();
             filter.type = 'bandpass';
-            filter.frequency.setValueAtTime(280, this.ctx.currentTime);
-            filter.frequency.exponentialRampToValueAtTime(850, this.ctx.currentTime + 0.45);
-            filter.frequency.exponentialRampToValueAtTime(180, this.ctx.currentTime + 0.9);
-            filter.Q.setValueAtTime(5.5, this.ctx.currentTime);
+            filter.frequency.setValueAtTime(300, ctx.currentTime);
+            filter.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.45);
+            filter.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.9);
+            filter.Q.setValueAtTime(6.0, ctx.currentTime);
 
-            const gain = this.ctx.createGain();
-            gain.gain.setValueAtTime(0.001, this.ctx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.07, this.ctx.currentTime + 0.35);
-            gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.9);
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(0.01, ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.35);
+            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.9);
 
             noise.connect(filter);
             filter.connect(gain);
-            gain.connect(this.ctx.destination);
+            gain.connect(ctx.destination);
             noise.start();
         } catch (e) {}
     }
@@ -378,7 +442,7 @@ class SpectralAudioEngine {
             osc.type = 'square';
             osc.frequency.setValueAtTime(600 + Math.random() * 400, this.ctx.currentTime);
 
-            gain.gain.setValueAtTime(0.02, this.ctx.currentTime);
+            gain.gain.setValueAtTime(0.025, this.ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.035);
 
             osc.connect(gain);
@@ -389,70 +453,70 @@ class SpectralAudioEngine {
     }
 
     playEVPStatic() {
-        if (this.isMuted || !this.ctx) return;
+        const ctx = this.ensureContext();
         try {
-            const bufferSize = this.ctx.sampleRate * 0.35;
-            const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+            const bufferSize = ctx.sampleRate * 0.4;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
             const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.8;
+            for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.9;
 
-            const noise = this.ctx.createBufferSource();
+            const noise = ctx.createBufferSource();
             noise.buffer = buffer;
 
-            const filter = this.ctx.createBiquadFilter();
+            const filter = ctx.createBiquadFilter();
             filter.type = 'bandpass';
-            filter.frequency.setValueAtTime(750 + Math.random() * 700, this.ctx.currentTime);
-            filter.Q.setValueAtTime(4.0, this.ctx.currentTime);
+            filter.frequency.setValueAtTime(800 + Math.random() * 700, ctx.currentTime);
+            filter.Q.setValueAtTime(4.0, ctx.currentTime);
 
-            const gain = this.ctx.createGain();
-            gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(0.2, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
 
             noise.connect(filter);
             filter.connect(gain);
-            gain.connect(this.ctx.destination);
+            gain.connect(ctx.destination);
 
             noise.start();
         } catch (e) {}
     }
 
     playAltarChime() {
-        if (this.isMuted || !this.ctx) return;
+        const ctx = this.ensureContext();
         try {
             const freqs = [293.66, 349.23, 415.30, 587.33];
             freqs.forEach((f, idx) => {
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(f, this.ctx.currentTime);
+                osc.frequency.setValueAtTime(f, ctx.currentTime);
 
-                gain.gain.setValueAtTime(0.08 / (idx + 1), this.ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 3.0);
+                gain.gain.setValueAtTime(0.12 / (idx + 1), ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 3.2);
 
                 osc.connect(gain);
-                gain.connect(this.ctx.destination);
+                gain.connect(ctx.destination);
                 osc.start();
-                osc.stop(this.ctx.currentTime + 3.1);
+                osc.stop(ctx.currentTime + 3.3);
             });
         } catch (e) {}
     }
 
     playGhostWhisperChime() {
-        if (this.isMuted || !this.ctx) return;
+        const ctx = this.ensureContext();
         try {
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
             osc.type = 'triangle';
-            osc.frequency.setValueAtTime(260, this.ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(80, this.ctx.currentTime + 0.9);
+            osc.frequency.setValueAtTime(280, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.9);
 
-            gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.9);
+            gain.gain.setValueAtTime(0.12, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.9);
 
             osc.connect(gain);
-            gain.connect(this.ctx.destination);
+            gain.connect(ctx.destination);
             osc.start();
-            osc.stop(this.ctx.currentTime + 0.9);
+            osc.stop(ctx.currentTime + 0.9);
         } catch (e) {}
     }
 }

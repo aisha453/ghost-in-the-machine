@@ -40,30 +40,37 @@ document.addEventListener("DOMContentLoaded", () => {
     const sndWhisper = document.getElementById("sndWhisper");
     const sndStinger = document.getElementById("sndStinger");
 
+    function playSpookyAction(btn, soundFn, emfLevel = 3) {
+        if (btn) {
+            btn.classList.add("active-sound");
+            setTimeout(() => btn.classList.remove("active-sound"), 350);
+        }
+        if (window.spectralAudio) {
+            window.spectralAudio.unmute();
+            updateAudioUI(true);
+            try {
+                soundFn();
+            } catch (err) {
+                console.error("Sound play error:", err);
+            }
+        }
+        triggerEMF(emfLevel);
+    }
+
     if (sndThunder) sndThunder.addEventListener("click", () => {
-        unmuteIfNeeded();
-        if (window.spectralAudio) window.spectralAudio.playThunder();
-        triggerEMF(4);
+        playSpookyAction(sndThunder, () => window.spectralAudio.playThunder(), 4);
     });
     if (sndBanshee) sndBanshee.addEventListener("click", () => {
-        unmuteIfNeeded();
-        if (window.spectralAudio) window.spectralAudio.playBansheeScreech();
-        triggerEMF(5);
+        playSpookyAction(sndBanshee, () => window.spectralAudio.playBansheeScreech(), 5);
     });
     if (sndHeartbeat) sndHeartbeat.addEventListener("click", () => {
-        unmuteIfNeeded();
-        if (window.spectralAudio) window.spectralAudio.playHeartbeat();
-        triggerEMF(2);
+        playSpookyAction(sndHeartbeat, () => window.spectralAudio.playHeartbeat(), 3);
     });
     if (sndCreak) sndCreak.addEventListener("click", () => {
-        unmuteIfNeeded();
-        if (window.spectralAudio) window.spectralAudio.playCreak();
-        triggerEMF(3);
+        playSpookyAction(sndCreak, () => window.spectralAudio.playCreak(), 3);
     });
     if (sndWhisper) sndWhisper.addEventListener("click", () => {
-        unmuteIfNeeded();
-        if (window.spectralAudio) window.spectralAudio.playGhostWhispers();
-        triggerEMF(3);
+        playSpookyAction(sndWhisper, () => window.spectralAudio.playGhostWhispers(), 3);
     });
     if (sndStinger) sndStinger.addEventListener("click", () => {
         triggerJumpscare();
@@ -76,8 +83,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function unmuteIfNeeded() {
-        if (window.spectralAudio && window.spectralAudio.isMuted) {
-            window.spectralAudio.toggleMute();
+        if (window.spectralAudio) {
+            window.spectralAudio.unmute();
             updateAudioUI(true);
         }
     }

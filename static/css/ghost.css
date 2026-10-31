@@ -441,6 +441,14 @@ header {
     box-shadow: 0 0 10px rgba(255, 30, 56, 0.5);
 }
 
+.sound-btn.active-sound {
+    background: #ff1e38 !important;
+    border-color: #ffffff !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 18px rgba(255, 30, 56, 0.9), 0 0 30px rgba(255, 255, 255, 0.6) !important;
+    transform: scale(1.08);
+}
+
 /* ==================== NAV TABS ==================== */
 .nav-tabs {
     display: flex;
