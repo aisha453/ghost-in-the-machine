@@ -192,14 +192,28 @@ document.addEventListener("DOMContentLoaded", () => {
         currentTab = tabId;
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.getAttribute("data-tab") === tabId));
         document.querySelectorAll(".tab-pane").forEach(p => p.classList.toggle("active", p.id === `${tabId}Pane`));
+        
+        unmuteIfNeeded();
+
+        const indicator = document.getElementById("activeSoundIndicator");
+
         if (window.spectralAudio) {
-            window.spectralAudio.playKeyClick();
-            if (tabId === "ofrenda") {
-                window.spectralAudio.playAltarChime();
+            if (tabId === "terminal") {
+                window.spectralAudio.playTabTerminalSound();
+                triggerEMF(3);
+                if (indicator) indicator.innerHTML = `🔊 Soundscape: <strong style="color:var(--accent-phosphor);">⚡ Electric Glitch & Coil Surge</strong>`;
             } else if (tabId === "seance") {
-                window.spectralAudio.playEVPStatic();
-                window.spectralAudio.playGhostBreath();
+                window.spectralAudio.playTabSeanceSound();
                 triggerEMF(4);
+                if (indicator) indicator.innerHTML = `🔊 Soundscape: <strong style="color:#f472b6;">🔮 Paranormal Banshee Wail & EVP</strong>`;
+            } else if (tabId === "ofrenda") {
+                window.spectralAudio.playTabOfrendaSound();
+                triggerEMF(2);
+                if (indicator) indicator.innerHTML = `🔊 Soundscape: <strong style="color:var(--accent-marigold);">🏵️ Cathedral Death Bell & Sacred Chime</strong>`;
+            } else if (tabId === "oracle") {
+                window.spectralAudio.playTabOracleSound();
+                triggerEMF(5);
+                if (indicator) indicator.innerHTML = `🔊 Soundscape: <strong style="color:var(--accent-blood);">💓 Biomechanical Heartbeat & Sonar</strong>`;
             }
         }
     }
