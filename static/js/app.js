@@ -33,12 +33,25 @@ document.addEventListener("DOMContentLoaded", () => {
     startCreepyEyesLoop();
 
     // ==================== SOUNDBOARD CONTROLS ====================
+    const sndMusic = document.getElementById("sndMusic");
     const sndThunder = document.getElementById("sndThunder");
     const sndBanshee = document.getElementById("sndBanshee");
     const sndHeartbeat = document.getElementById("sndHeartbeat");
     const sndCreak = document.getElementById("sndCreak");
     const sndWhisper = document.getElementById("sndWhisper");
     const sndStinger = document.getElementById("sndStinger");
+
+    if (sndMusic) {
+        sndMusic.addEventListener("click", () => {
+            if (window.spectralAudio) {
+                const isPlaying = window.spectralAudio.toggleGhostMusic();
+                sndMusic.textContent = isPlaying ? "🎵 Ghost Music: ON" : "🎵 Ghost Music: OFF";
+                sndMusic.style.borderColor = isPlaying ? "#f472b6" : "rgba(244, 114, 182, 0.5)";
+                sndMusic.style.boxShadow = isPlaying ? "0 0 14px rgba(244, 114, 182, 0.7)" : "none";
+                updateAudioUI(true);
+            }
+        });
+    }
 
     function playSpookyAction(btn, soundFn, emfLevel = 3) {
         if (btn) {
@@ -94,6 +107,12 @@ document.addEventListener("DOMContentLoaded", () => {
         audioLabel.textContent = unmuted ? "Spectral Audio: ON" : "Spectral Audio: OFF";
         audioToggleBtn.style.borderColor = unmuted ? "var(--accent-blood)" : "var(--border-blood)";
         audioToggleBtn.style.boxShadow = unmuted ? "0 0 14px rgba(255, 30, 56, 0.5)" : "none";
+        if (sndMusic && window.spectralAudio) {
+            const isPlaying = window.spectralAudio.isMusicPlaying;
+            sndMusic.textContent = isPlaying ? "🎵 Ghost Music: ON" : "🎵 Ghost Music: OFF";
+            sndMusic.style.borderColor = isPlaying ? "#f472b6" : "rgba(244, 114, 182, 0.5)";
+            sndMusic.style.boxShadow = isPlaying ? "0 0 14px rgba(244, 114, 182, 0.7)" : "none";
+        }
     }
 
     // ==================== EMF GHOST DETECTOR ====================

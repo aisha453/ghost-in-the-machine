@@ -2,6 +2,7 @@
  * Ghost in the Machine - Advanced Procedural Web Audio Synthesizer
  * 100% Offline, Zero external audio assets required.
  * Synthesizes: 
+ * - Ghostly Gothic Background Music (Halloween / Music Box Arpeggios & Organ Drone)
  * - Thunderclap & Low Rolling Rumble
  * - Terrifying Banshee Howl / Screech
  * - Heavy Sub-Bass Heartbeat Pulse (Lub-Dub)
@@ -16,11 +17,25 @@ class SpectralAudioEngine {
     constructor() {
         this.ctx = null;
         this.isMuted = true;
+        this.isMusicPlaying = false;
         this.droneGain = null;
         this.droneOsc1 = null;
         this.droneOsc2 = null;
+        this.musicGain = null;
         this.heartbeatTimer = null;
         this.ambientSpookTimer = null;
+        this.musicInterval = null;
+        this.melodyStep = 0;
+
+        // Gothic Horror Melody (D Minor & C# Diminished - classic Halloween / Rosemary's Baby style)
+        this.melodyNotes = [
+            // Measure 1 & 2: D minor chilling pulse
+            587.33, 440.00, 440.00, 587.33, 440.00, 440.00, 466.16, 440.00,
+            587.33, 440.00, 440.00, 587.33, 440.00, 440.00, 659.25, 587.33,
+            // Measure 3 & 4: C# diminished dread & bell descent
+            554.37, 440.00, 440.00, 554.37, 440.00, 440.00, 466.16, 440.00,
+            554.37, 440.00, 392.00, 349.23, 329.63, 293.66, 261.63, 293.66
+        ];
     }
 
     ensureContext() {
@@ -70,6 +85,126 @@ class SpectralAudioEngine {
         }
     }
 
+    // ==================== GHOSTLY BACKGROUND MUSIC ====================
+    startGhostMusic() {
+        const ctx = this.ensureContext();
+        this.isMusicPlaying = true;
+
+        if (!this.musicGain) {
+            this.musicGain = ctx.createGain();
+            this.musicGain.gain.setValueAtTime(0.18, ctx.currentTime);
+            this.musicGain.connect(ctx.destination);
+        } else {
+            this.musicGain.gain.setTargetAtTime(0.18, ctx.currentTime, 0.2);
+        }
+
+        if (this.musicInterval) clearInterval(this.musicInterval);
+
+        // Play each 16th note at ~240ms (creepy hypnotic tempo)
+        this.musicInterval = setInterval(() => {
+            if (!this.isMusicPlaying) return;
+            const freq = this.melodyNotes[this.melodyStep % this.melodyNotes.length];
+            this.playMusicBoxNote(freq);
+
+            // Every 8 steps, swell a deep haunted cathedral bass organ note
+            if (this.melodyStep % 8 === 0) {
+                const bassFreq = (this.melodyStep % 16 === 0) ? 73.42 : 58.27; // D2 or Bb1
+                this.playCathedralBass(bassFreq);
+            }
+
+            this.melodyStep++;
+        }, 240);
+    }
+
+    stopGhostMusic() {
+        this.isMusicPlaying = false;
+        if (this.musicInterval) {
+            clearInterval(this.musicInterval);
+            this.musicInterval = null;
+        }
+        if (this.musicGain && this.ctx) {
+            this.musicGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.3);
+        }
+    }
+
+    toggleGhostMusic() {
+        if (this.isMusicPlaying) {
+            this.stopGhostMusic();
+            return false;
+        } else {
+            this.startGhostMusic();
+            return true;
+        }
+    }
+
+    // Single delicate, chilling music box / bell chime
+    playMusicBoxNote(freq) {
+        if (!this.ctx || !this.isMusicPlaying) return;
+        try {
+            const now = this.ctx.currentTime;
+            
+            // Fundamental sine (pure music box tine)
+            const osc = this.ctx.createOscillator();
+            const oscGain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now);
+
+            // High metallic inharmonic harmonic (bell ping)
+            const harm = this.ctx.createOscillator();
+            const harmGain = this.ctx.createGain();
+            harm.type = 'sine';
+            harm.frequency.setValueAtTime(freq * 2.756, now);
+
+            // Reverb-like decaying envelope
+            oscGain.gain.setValueAtTime(0.01, now);
+            oscGain.gain.linearRampToValueAtTime(0.16, now + 0.008);
+            oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
+
+            harmGain.gain.setValueAtTime(0.06, now);
+            harmGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+
+            osc.connect(oscGain);
+            harm.connect(harmGain);
+
+            oscGain.connect(this.musicGain);
+            harmGain.connect(this.musicGain);
+
+            osc.start(now);
+            harm.start(now);
+            osc.stop(now + 0.6);
+            harm.stop(now + 0.25);
+        } catch (e) {}
+    }
+
+    // Low Cathedral Organ Bass Swell
+    playCathedralBass(freq) {
+        if (!this.ctx || !this.isMusicPlaying) return;
+        try {
+            const now = this.ctx.currentTime;
+            const bass = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            const filter = this.ctx.createBiquadFilter();
+
+            bass.type = 'triangle';
+            bass.frequency.setValueAtTime(freq, now);
+
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(180, now);
+            filter.frequency.linearRampToValueAtTime(90, now + 1.8);
+
+            gain.gain.setValueAtTime(0.01, now);
+            gain.gain.linearRampToValueAtTime(0.24, now + 0.3);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.9);
+
+            bass.connect(filter);
+            filter.connect(gain);
+            gain.connect(this.musicGain);
+
+            bass.start(now);
+            bass.stop(now + 2.0);
+        } catch (e) {}
+    }
+
     toggleMute() {
         const ctx = this.ensureContext();
         this.isMuted = !this.isMuted;
@@ -80,6 +215,14 @@ class SpectralAudioEngine {
         if (this.droneGain) {
             this.droneGain.gain.setTargetAtTime(this.isMuted ? 0 : 0.08, ctx.currentTime, 0.15);
         }
+
+        // Toggle music with main audio
+        if (!this.isMuted && !this.isMusicPlaying) {
+            this.startGhostMusic();
+        } else if (this.isMuted && this.isMusicPlaying) {
+            this.stopGhostMusic();
+        }
+
         return !this.isMuted;
     }
 
@@ -91,6 +234,9 @@ class SpectralAudioEngine {
         }
         if (this.droneGain) {
             this.droneGain.gain.setTargetAtTime(0.08, ctx.currentTime, 0.15);
+        }
+        if (!this.isMusicPlaying) {
+            this.startGhostMusic();
         }
     }
 
@@ -124,7 +270,7 @@ class SpectralAudioEngine {
         try {
             const now = ctx.currentTime;
             
-            // 1. Sharp lightning crack (high-pass noise)
+            // Sharp lightning crack (high-pass noise)
             const bufferSize = ctx.sampleRate * 2.8;
             const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
             const data = buffer.getChannelData(0);
@@ -140,15 +286,15 @@ class SpectralAudioEngine {
 
             const gain = ctx.createGain();
             gain.gain.setValueAtTime(0.01, now);
-            gain.gain.linearRampToValueAtTime(0.45, now + 0.04); // explosive crack
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.8); // low rumble
+            gain.gain.linearRampToValueAtTime(0.45, now + 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.8);
 
             noise.connect(filter);
             filter.connect(gain);
             gain.connect(ctx.destination);
             noise.start(now);
 
-            // 2. Sub-bass boom
+            // Sub-bass boom
             const sub = ctx.createOscillator();
             const subGain = ctx.createGain();
             sub.type = 'sine';
@@ -173,7 +319,6 @@ class SpectralAudioEngine {
         try {
             const now = ctx.currentTime;
             
-            // Primary Screech Oscillator
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             const filter = ctx.createBiquadFilter();
@@ -186,7 +331,7 @@ class SpectralAudioEngine {
             // Vibrato LFO
             const lfo = ctx.createOscillator();
             const lfoGain = ctx.createGain();
-            lfo.frequency.setValueAtTime(14, now); // 14Hz eerie vibrato
+            lfo.frequency.setValueAtTime(14, now);
             lfoGain.gain.setValueAtTime(120, now);
             lfo.connect(osc.frequency);
             lfo.start(now);
@@ -219,7 +364,7 @@ class SpectralAudioEngine {
         try {
             const now = ctx.currentTime;
             
-            // Lub (First beat)
+            // Lub
             const osc1 = ctx.createOscillator();
             const gain1 = ctx.createGain();
             osc1.type = 'sine';
@@ -234,7 +379,7 @@ class SpectralAudioEngine {
             osc1.start(now);
             osc1.stop(now + 0.18);
 
-            // Dub (Second beat, 180ms later)
+            // Dub (180ms later)
             const osc2 = ctx.createOscillator();
             const gain2 = ctx.createGain();
             osc2.type = 'sine';
@@ -259,7 +404,6 @@ class SpectralAudioEngine {
         try {
             const now = ctx.currentTime;
             
-            // FM Synthesis for wood splintering groan
             const carrier = ctx.createOscillator();
             const modulator = ctx.createOscillator();
             const modGain = ctx.createGain();
@@ -312,7 +456,6 @@ class SpectralAudioEngine {
             const noise = ctx.createBufferSource();
             noise.buffer = buffer;
 
-            // Formant bandpass mimics human whispering frequencies
             const filter = ctx.createBiquadFilter();
             filter.type = 'bandpass';
             filter.frequency.setValueAtTime(450, now);
@@ -336,13 +479,12 @@ class SpectralAudioEngine {
         }
     }
 
-    // 6. Jumpscare Stinger (Sharp metallic dissonant impact)
+    // 6. Jumpscare Stinger
     playJumpscareStinger() {
         const ctx = this.ensureContext();
         try {
             const now = ctx.currentTime;
             
-            // White noise impact burst
             const bufferSize = ctx.sampleRate * 0.45;
             const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
             const data = buffer.getChannelData(0);
@@ -357,7 +499,7 @@ class SpectralAudioEngine {
             noiseGain.connect(ctx.destination);
             noise.start(now);
 
-            // Dissonant minor cluster chords (C4, C#4, F#4, G4, B4)
+            // Dissonant minor cluster chords
             const freqs = [261.63, 277.18, 369.99, 392.00, 493.88];
             freqs.forEach(f => {
                 const osc = ctx.createOscillator();
@@ -379,7 +521,7 @@ class SpectralAudioEngine {
         }
     }
 
-    // 7. EMF Meter Clicks (Geiger counter pulses)
+    // 7. EMF Meter Clicks
     playEMFBeep(level = 3) {
         const ctx = this.ensureContext();
         try {
