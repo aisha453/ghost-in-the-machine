@@ -248,6 +248,76 @@ class SpectralAudioEngine {
         }
     }
 
+    // Tab 5: Terminal Exorcist - Monastic Chant Drone & Electric Thunder Snap
+    playTabExorcistSound() {
+        const ctx = this.ensureContext();
+        try {
+            const now = ctx.currentTime;
+
+            // 1. Resonant Monastic Chant Drone (110Hz root + 165Hz fifth)
+            const chant1 = ctx.createOscillator();
+            const chant2 = ctx.createOscillator();
+            const chantGain = ctx.createGain();
+            const chantFilter = ctx.createBiquadFilter();
+
+            chant1.type = 'sawtooth';
+            chant1.frequency.setValueAtTime(110, now);
+            chant1.frequency.exponentialRampToValueAtTime(120, now + 0.9);
+
+            chant2.type = 'triangle';
+            chant2.frequency.setValueAtTime(164.81, now);
+            chant2.frequency.exponentialRampToValueAtTime(175, now + 0.9);
+
+            chantFilter.type = 'bandpass';
+            chantFilter.frequency.setValueAtTime(450, now);
+            chantFilter.frequency.exponentialRampToValueAtTime(800, now + 0.8);
+            chantFilter.Q.setValueAtTime(5.0, now);
+
+            chantGain.gain.setValueAtTime(0.01, now);
+            chantGain.gain.linearRampToValueAtTime(0.42, now + 0.25);
+            chantGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.1);
+
+            chant1.connect(chantFilter);
+            chant2.connect(chantFilter);
+            chantFilter.connect(chantGain);
+            chantGain.connect(ctx.destination);
+
+            chant1.start(now);
+            chant2.start(now);
+            chant1.stop(now + 1.15);
+            chant2.stop(now + 1.15);
+
+            // 2. Electric Thunder Snap (Expelling the Bug)
+            const bufferSize = ctx.sampleRate * 0.45;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.12));
+            }
+
+            const noise = ctx.createBufferSource();
+            noise.buffer = buffer;
+
+            const noiseFilter = ctx.createBiquadFilter();
+            noiseFilter.type = 'bandpass';
+            noiseFilter.frequency.setValueAtTime(1800, now + 0.2);
+            noiseFilter.frequency.exponentialRampToValueAtTime(220, now + 0.6);
+            noiseFilter.Q.setValueAtTime(3.0, now);
+
+            const noiseGain = ctx.createGain();
+            noiseGain.gain.setValueAtTime(0.001, now);
+            noiseGain.gain.setValueAtTime(0.45, now + 0.2);
+            noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.65);
+
+            noise.connect(noiseFilter);
+            noiseFilter.connect(noiseGain);
+            noiseGain.connect(ctx.destination);
+            noise.start(now + 0.2);
+        } catch (e) {
+            console.error("Tab exorcist sound error:", e);
+        }
+    }
+
     // ==================== BACKGROUND GHOSTLY MUSIC ====================
     startGhostMusic() {
         const ctx = this.ensureContext();

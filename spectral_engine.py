@@ -466,5 +466,159 @@ class SpectralEngine:
             f"Descansa en paz, {name}. You live within our thoughts, tonight and forever."
         )
 
+    # ----------------------------------------------------
+    # MODE 4: THE TERMINAL EXORCIST (ERROR DECODER)
+    # ----------------------------------------------------
+    def decode_terminal_error(self, error_log: str, provider: str = "auto") -> Dict[str, Any]:
+        """
+        Translates cryptic terminal traces, compiler errors, or shell crashes
+        into clear, beginner-friendly layman English with root cause and fix.
+        """
+        text = error_log.strip()
+        if not text:
+            return {
+                "plain_english": "No error log was provided. Paste your terminal trace or compiler output above.",
+                "root_cause": "Empty input buffer.",
+                "fix_command": "# Paste an error from VS Code or your terminal to begin",
+                "provider": "system"
+            }
+
+        system_prompt = (
+            "You are the Terminal Exorcist, a patient senior developer who translates terrifying, cryptic "
+            "terminal errors, stack traces, and compiler crashes into plain, jargon-free English for beginners.\n"
+            "Analyze the given terminal output and respond strictly in this format:\n\n"
+            "WHAT HAPPENED:\n"
+            "<Explain what failed in simple everyday language as if explaining to someone with zero coding experience. Use metaphors if helpful.>\n\n"
+            "ROOT CAUSE:\n"
+            "<Explain in 1-2 sentences the exact technical setting, missing dependency, syntax error, or command that caused it.>\n\n"
+            "HOW TO FIX IT:\n"
+            "<Provide the exact copy-pasteable terminal command or short code fix to solve it immediately.>"
+        )
+
+        ai_raw = None
+        if provider in ("auto", "ollama") and self.ollama_available:
+            ai_raw = self.query_ollama(f"Decode this terminal error:\n```\n{text[:1500]}\n```", system=system_prompt, timeout=8.0)
+
+        if ai_raw:
+            parsed = self._parse_exorcist_sections(ai_raw)
+            parsed["provider"] = "ollama-open-weight"
+            return parsed
+
+        # Offline procedural fallback decoder for guaranteed instant response
+        fallback = self._procedural_error_decoder(text)
+        fallback["provider"] = "autonomous-exorcist-core"
+        return fallback
+
+    def _parse_exorcist_sections(self, raw_text: str) -> Dict[str, str]:
+        """Parses LLM response into structured sections."""
+        plain = ""
+        cause = ""
+        fix = ""
+
+        lower = raw_text.lower()
+        if "what happened:" in lower:
+            parts = raw_text.split("WHAT HAPPENED:")
+            rest = parts[1] if len(parts) > 1 else ""
+            if "ROOT CAUSE:" in rest:
+                p_parts = rest.split("ROOT CAUSE:")
+                plain = p_parts[0].strip()
+                rest2 = p_parts[1]
+                if "HOW TO FIX IT:" in rest2:
+                    c_parts = rest2.split("HOW TO FIX IT:")
+                    cause = c_parts[0].strip()
+                    fix = c_parts[1].strip()
+                else:
+                    cause = rest2.strip()
+            else:
+                plain = rest.strip()
+        else:
+            plain = raw_text.strip()
+            cause = "Identified from terminal exit code and trace."
+            fix = "# Review the explanation above to resolve the issue"
+
+        return {
+            "plain_english": plain or "The program encountered an unexpected condition and halted execution.",
+            "root_cause": cause or "Missing resource, incorrect permission, or syntax conflict in the script.",
+            "fix_command": fix or "# Check file paths and re-run your command"
+        }
+
+    def _procedural_error_decoder(self, error_log: str) -> Dict[str, str]:
+        """High-accuracy pattern matching fallback for standard developer errors."""
+        e = error_log.lower()
+
+        # 1. Python ModuleNotFoundError / ImportError
+        if "modulenotfounderror" in e or "no module named" in e:
+            import re
+            m = re.search(r"no module named ['\"]?([a-zA-Z0-9_\-]+)['\"]?", error_log, re.IGNORECASE)
+            pkg = m.group(1) if m else "package_name"
+            return {
+                "plain_english": (
+                    f"Your Python code is trying to use an external tool or library called '{pkg}', "
+                    f"but your computer doesn't have it installed in your current environment. "
+                    f"Imagine asking a chef for cinnamon, but the spice rack has never had cinnamon purchased."
+                ),
+                "root_cause": f"The Python package '{pkg}' has not been installed into your active virtual environment or global Python interpreter.",
+                "fix_command": f"pip install {pkg}\n# Or for python3:\npython -m pip install {pkg}"
+            }
+
+        # 2. Ubuntu / Linux / macOS Permission Denied / EACCES
+        elif "permission denied" in e or "eacces" in e:
+            return {
+                "plain_english": (
+                    "Your operating system blocked this action because your user account doesn't have the administrative "
+                    "keys to modify this file or execute this script. The system locked the door for security."
+                ),
+                "root_cause": "The command requires elevated root/administrator privileges, or the target file lacks execution permissions (+x).",
+                "fix_command": "# Make the script executable:\nchmod +x <filename>\n\n# Or run with administrator rights:\nsudo <your_command>"
+            }
+
+        # 3. Port Already in Use (EADDRINUSE / WinError 10048)
+        elif "eaddrinuse" in e or "address already in use" in e or "10048" in e:
+            import re
+            m = re.search(r"port[ :]?([0-9]{2,5})", error_log, re.IGNORECASE)
+            port = m.group(1) if m else "8080"
+            return {
+                "plain_english": (
+                    f"Your web server or app is trying to open port {port} to listen for connections, but another program "
+                    f"(possibly a previous run of your own app that didn't fully shut down) is already occupying that port. "
+                    f"Two programs cannot talk on the exact same telephone line at the same time."
+                ),
+                "root_cause": f"Another background process has already bound to TCP port {port}.",
+                "fix_command": f"# Find and terminate the ghost process holding port {port}:\n# On Windows:\nGet-Process -Id (Get-NetTCPConnection -LocalPort {port}).OwningProcess | Stop-Process -Force\n\n# On Linux / macOS / Ubuntu:\nlsof -ti:{port} | xargs kill -9"
+            }
+
+        # 4. Git Merge Conflict / fatal unrelated histories
+        elif "merge conflict" in e or "conflict" in e or "unrelated histories" in e:
+            return {
+                "plain_english": (
+                    "Git is confused because both your local branch and the remote repository changed the exact same "
+                    "lines of code in different ways. Git doesn't want to make an assumption and accidentally overwrite someone's work, "
+                    "so it stopped and asked you to decide which lines to keep."
+                ),
+                "root_cause": "Concurrent commits modified the same line regions across two branches without a linear common ancestor.",
+                "fix_command": "# View which files have conflicts:\ngit status\n\n# Open the conflicting files in VS Code, click 'Accept Current' or 'Accept Incoming', then:\ngit add .\ngit commit -m 'Resolve merge conflict'"
+            }
+
+        # 5. Node.js npm ERR! ERESOLVE
+        elif "npm err!" in e or "eresolve" in e:
+            return {
+                "plain_english": (
+                    "npm is trying to install dependencies for your project, but two of the packages you requested depend "
+                    "on conflicting versions of a third package. npm refuses to proceed until this knot is untangled."
+                ),
+                "root_cause": "Peer dependency conflict in package.json between installed packages.",
+                "fix_command": "# Force npm to bypass peer dependency checking:\nnpm install --legacy-peer-deps\n\n# Or force installation:\nnpm install --force"
+            }
+
+        # General Fallback
+        return {
+            "plain_english": (
+                "The command or script halted because it encountered an unexpected error state. "
+                "The program attempted an operation that the system kernel or programming language runtime could not fulfill."
+            ),
+            "root_cause": "Runtime exception or invalid exit code returned during execution.",
+            "fix_command": "# Check logs for the exact line number, or re-run with verbose output:\n<your_command> --verbose"
+        }
+
 # Global singleton
 spectral_engine = SpectralEngine()

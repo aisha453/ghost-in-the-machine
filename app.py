@@ -159,11 +159,23 @@ async def api_ofrenda_create(request):
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
 
+async def api_terminal_decode(request):
+    """Decodes cryptic terminal traces & errors into beginner-friendly layman English with exact fixes."""
+    try:
+        body = await request.json()
+        error_log = body.get("error_log", "").strip()
+        provider = body.get("provider", "auto")
+        decoded = spectral_engine.decode_terminal_error(error_log, provider=provider)
+        return JSONResponse(decoded)
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
 routes = [
     Route("/", homepage),
     Route("/api/vitals", api_vitals),
     Route("/api/ollama/status", api_ollama_status),
     Route("/api/terminal/exec", api_terminal_exec, methods=["POST"]),
+    Route("/api/terminal/decode", api_terminal_decode, methods=["POST"]),
     Route("/api/seance/summon", api_seance_summon, methods=["POST"]),
     Route("/api/seance/spirits", api_seance_spirits),
     Route("/api/ofrendas", api_ofrendas_list),

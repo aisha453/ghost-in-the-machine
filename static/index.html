@@ -111,6 +111,9 @@
         <button class="tab-btn" data-tab="oracle">
             <span>⚡</span> [ 4 ] SILICON VITALS & MANIFESTO <small style="opacity:0.75; font-size:0.7rem;">💓 Heartbeat</small>
         </button>
+        <button class="tab-btn" data-tab="exorcist">
+            <span>⚡</span> [ 5 ] TERMINAL EXORCIST <small style="opacity:0.75; font-size:0.7rem;">⚡ Chant</small>
+        </button>
         <div class="active-sound-indicator" id="activeSoundIndicator" style="margin-left: auto; align-self: center; font-size: 0.72rem; color: #cbd5e1; background: rgba(0,0,0,0.5); padding: 4px 12px; border-radius: 4px; border: 1px solid var(--border-blood);">
             🔊 Soundscape: <strong style="color:var(--accent-phosphor);">⚡ Electric Glitch & Coil Surge</strong>
         </div>
@@ -331,6 +334,90 @@
                     <p>
                         <strong>3. Zero Running Cost & Permanent Longevity:</strong> Proprietary APIs deprecate endpoints, change prices, and cancel services on corporate whims. Open-source software and open-weight models belong to humanity. The code and models you run tonight will still execute twenty years from now, ensuring your memorials never disappear behind an expired credit card or a shutdown notice.
                     </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 5: TERMINAL EXORCIST (ERROR DECODER) ==================== -->
+        <div class="tab-pane" id="exorcistPane">
+            <div class="exorcist-hero">
+                <div class="hero-badge">⚡ PURPOSEFUL DEVELOPER TOOL &bull; SOVEREIGN LOCAL AI</div>
+                <h2 class="exorcist-title">THE TERMINAL EXORCIST</h2>
+                <p class="exorcist-subtitle">
+                    Paste cryptic compiler errors, stack traces, or Ubuntu terminal failures below. 
+                    Our local open-weight AI will exorcise the bug and translate it into plain, simple English with an exact copy-pasteable fix.
+                </p>
+            </div>
+
+            <!-- Quick sample error chips -->
+            <div class="exorcist-samples-container">
+                <span class="sample-label">⚡ 1-CLICK SAMPLE ERRORS:</span>
+                <button class="sample-chip" data-sample="python">🐍 Python: ModuleNotFoundError</button>
+                <button class="sample-chip" data-sample="ubuntu">🐧 Ubuntu: EACCES Permission Denied</button>
+                <button class="sample-chip" data-sample="port">🌐 Port 8080 Collision (EADDRINUSE)</button>
+                <button class="sample-chip" data-sample="git">🌿 Git: Merge Conflict</button>
+                <button class="sample-chip" data-sample="node">📦 Node.js: Cannot find module</button>
+            </div>
+
+            <!-- Input area -->
+            <div class="exorcist-input-box">
+                <div class="input-header">
+                    <span>Terminal / Compiler Output (VS Code, Ubuntu, Bash, Node, Python)</span>
+                    <button class="clear-input-btn" id="clearErrorBtn">Clear</button>
+                </div>
+                <textarea id="errorInput" placeholder="Paste your messy terminal output, stack trace, or compiler error here...
+e.g.
+Traceback (most recent call last):
+  File &quot;main.py&quot;, line 4, in &lt;module&gt;
+    import requests
+ModuleNotFoundError: No module named 'requests'"></textarea>
+                <div class="input-actions">
+                    <button class="exorcise-btn" id="decodeErrorBtn">
+                        <span class="btn-bolt">⚡</span>
+                        <span id="decodeBtnText">EXORCISE &amp; TRANSLATE BUG</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Result area -->
+            <div class="exorcist-result" id="exorcistResult" style="display: none;">
+                <div class="result-header">
+                    <span class="status-indicator">● BUG EXORCISED</span>
+                    <span id="resultProviderBadge" class="provider-pill">Engine: Local Open AI</span>
+                </div>
+
+                <div class="decoded-cards-grid">
+                    <!-- Card 1: What Happened -->
+                    <div class="decoded-card card-layman">
+                        <div class="card-title">
+                            <span class="card-icon">💡</span>
+                            <span>WHAT HAPPENED (IN PLAIN ENGLISH)</span>
+                        </div>
+                        <p class="card-content" id="decodedPlainEnglish">
+                            <!-- Populated by JS -->
+                        </p>
+                    </div>
+
+                    <!-- Card 2: Root Cause -->
+                    <div class="decoded-card card-root">
+                        <div class="card-title">
+                            <span class="card-icon">🔍</span>
+                            <span>ROOT CAUSE</span>
+                        </div>
+                        <p class="card-content" id="decodedRootCause">
+                            <!-- Populated by JS -->
+                        </p>
+                    </div>
+
+                    <!-- Card 3: Exact Fix -->
+                    <div class="decoded-card card-fix">
+                        <div class="card-title">
+                            <span class="card-icon">🛠️</span>
+                            <span>EXACT FIX (COPY &amp; RUN)</span>
+                            <button class="copy-fix-btn" id="copyFixBtn">📋 Copy Command</button>
+                        </div>
+                        <pre class="fix-code" id="decodedFixCode"><code><!-- Populated by JS --></code></pre>
+                    </div>
                 </div>
             </div>
         </div>

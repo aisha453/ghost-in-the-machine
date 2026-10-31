@@ -214,6 +214,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 window.spectralAudio.playTabOracleSound();
                 triggerEMF(5);
                 if (indicator) indicator.innerHTML = `🔊 Soundscape: <strong style="color:var(--accent-blood);">💓 Biomechanical Heartbeat & Sonar</strong>`;
+            } else if (tabId === "exorcist") {
+                window.spectralAudio.playTabExorcistSound();
+                triggerEMF(4);
+                if (indicator) indicator.innerHTML = `🔊 Soundscape: <strong style="color:#38bdf8;">⚡ Exorcism Chant & Thunder Crack</strong>`;
             }
         }
     }
@@ -518,6 +522,136 @@ document.addEventListener("DOMContentLoaded", () => {
                 ofrendaSubmitBtn.disabled = false;
                 ofrendaSubmitBtn.textContent = "🏵️ Consagrar Ofrenda (Consecrate Altar)";
             }
+        });
+    }
+
+    // ==================== TERMINAL EXORCIST (ERROR DECODER) ====================
+    const errorInput = document.getElementById("errorInput");
+    const decodeErrorBtn = document.getElementById("decodeErrorBtn");
+    const decodeBtnText = document.getElementById("decodeBtnText");
+    const clearErrorBtn = document.getElementById("clearErrorBtn");
+    const exorcistResult = document.getElementById("exorcistResult");
+    const decodedPlainEnglish = document.getElementById("decodedPlainEnglish");
+    const decodedRootCause = document.getElementById("decodedRootCause");
+    const decodedFixCode = document.getElementById("decodedFixCode");
+    const copyFixBtn = document.getElementById("copyFixBtn");
+    const resultProviderBadge = document.getElementById("resultProviderBadge");
+
+    const sampleErrors = {
+        python: `Traceback (most recent call last):
+  File "main.py", line 4, in <module>
+    import requests
+ModuleNotFoundError: No module named 'requests'`,
+        ubuntu: `ubuntu@vessel:~$ cat /etc/shadow
+cat: /etc/shadow: Permission denied`,
+        port: `Error: listen EADDRINUSE: address already in use :::8080
+    at Server.setupListenHandle [as _listen2] (node:net:1872:16)
+    at listenInCluster (node:net:1920:12)
+    at Server.listen (node:net:2008:7)`,
+        git: `Auto-merging src/app.js
+CONFLICT (content): Merge conflict in src/app.js
+Automatic merge failed; fix conflicts and then commit the result.`,
+        node: `node:internal/modules/cjs/loader:1147
+  throw err;
+  ^
+Error: Cannot find module 'express'
+Require stack:
+- /home/ubuntu/app/server.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1144:15)`
+    };
+
+    document.querySelectorAll(".sample-chip").forEach(chip => {
+        chip.addEventListener("click", () => {
+            const key = chip.getAttribute("data-sample");
+            if (sampleErrors[key] && errorInput) {
+                errorInput.value = sampleErrors[key];
+                if (window.spectralAudio) window.spectralAudio.playKeyClick();
+                triggerEMF(2);
+            }
+        });
+    });
+
+    if (clearErrorBtn && errorInput) {
+        clearErrorBtn.addEventListener("click", () => {
+            errorInput.value = "";
+            if (exorcistResult) exorcistResult.style.display = "none";
+        });
+    }
+
+    if (decodeErrorBtn) {
+        decodeErrorBtn.addEventListener("click", async () => {
+            const errorLog = errorInput ? errorInput.value.trim() : "";
+            if (!errorLog) {
+                alert("Please paste a terminal output or select a sample error above.");
+                return;
+            }
+
+            unmuteIfNeeded();
+            if (window.spectralAudio) {
+                window.spectralAudio.playThunder();
+            }
+            triggerEMF(5);
+
+            decodeErrorBtn.disabled = true;
+            if (decodeBtnText) decodeBtnText.textContent = "⚡ EXORCISING & CONSULTING LOCAL OPEN AI...";
+
+            try {
+                const provider = providerSelector ? providerSelector.value : "auto";
+                const res = await fetch("/api/terminal/decode", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ error_log: errorLog, provider: provider })
+                });
+
+                if (!res.ok) {
+                    throw new Error(`Server returned HTTP ${res.status}`);
+                }
+
+                const data = await res.json();
+
+                if (decodedPlainEnglish) decodedPlainEnglish.textContent = data.plain_english || "Unable to translate bug.";
+                if (decodedRootCause) decodedRootCause.textContent = data.root_cause || "Root cause unclear.";
+                if (decodedFixCode) {
+                    const codeEl = decodedFixCode.querySelector("code") || decodedFixCode;
+                    codeEl.textContent = data.fix_command || "# No specific command needed";
+                }
+                if (resultProviderBadge) {
+                    resultProviderBadge.textContent = `Engine: ${data.provider || "local-ai"}`;
+                }
+
+                if (exorcistResult) {
+                    exorcistResult.style.display = "block";
+                    exorcistResult.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+
+                if (window.spectralAudio) {
+                    window.spectralAudio.playAltarChime();
+                }
+            } catch (err) {
+                alert("Failed to exorcise error: " + err.message);
+            } finally {
+                decodeErrorBtn.disabled = false;
+                if (decodeBtnText) decodeBtnText.textContent = "EXORCISE & TRANSLATE BUG";
+            }
+        });
+    }
+
+    if (copyFixBtn && decodedFixCode) {
+        copyFixBtn.addEventListener("click", () => {
+            const codeEl = decodedFixCode.querySelector("code") || decodedFixCode;
+            const textToCopy = codeEl.textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                copyFixBtn.textContent = "✅ Copied!";
+                copyFixBtn.style.borderColor = "var(--accent-phosphor)";
+                copyFixBtn.style.color = "var(--accent-phosphor)";
+                setTimeout(() => {
+                    copyFixBtn.textContent = "📋 Copy Command";
+                    copyFixBtn.style.borderColor = "";
+                    copyFixBtn.style.color = "";
+                }, 2000);
+            }).catch(err => {
+                console.error("Copy failed:", err);
+            });
         });
     }
 
