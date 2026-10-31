@@ -180,9 +180,10 @@ app = Starlette(debug=False, routes=routes, middleware=middleware)
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8888))
+    host = os.environ.get("HOST", "0.0.0.0")
     print(f"============================================================")
     print(f" GHOST IN THE MACHINE - SÉANCE & OFRENDA SUITE")
-    print(f" Serving on: http://127.0.0.1:{port}")
+    print(f" Serving on: http://{host}:{port}")
     print(f" Press Ctrl+C to terminate.")
     print(f"============================================================")
-    uvicorn.run("app:app", host="127.0.0.1", port=port, log_level="info")
+    uvicorn.run("app:app", host=host, port=port, log_level="info")
