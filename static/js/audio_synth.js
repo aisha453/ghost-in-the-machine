@@ -96,64 +96,9 @@ class SpectralAudioEngine {
         }
     }
 
-    // Tab 2: Séance - Eerie Paranormal Banshee Wail & EVP Whisper
+    // Tab 2: Séance - Eerie Paranormal Ghost Moan & EVP Whisper
     playTabSeanceSound() {
-        const ctx = this.ensureContext();
-        try {
-            const now = ctx.currentTime;
-
-            // Chilling spectral wail
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            const filter = ctx.createBiquadFilter();
-
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(380, now);
-            osc.frequency.exponentialRampToValueAtTime(950, now + 0.35);
-            osc.frequency.exponentialRampToValueAtTime(220, now + 0.95);
-
-            filter.type = 'bandpass';
-            filter.frequency.setValueAtTime(600, now);
-            filter.frequency.linearRampToValueAtTime(1500, now + 0.4);
-            filter.frequency.linearRampToValueAtTime(300, now + 0.95);
-            filter.Q.setValueAtTime(6.0, now);
-
-            gain.gain.setValueAtTime(0.01, now);
-            gain.gain.linearRampToValueAtTime(0.38, now + 0.25);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.05);
-
-            osc.connect(filter);
-            filter.connect(gain);
-            gain.connect(ctx.destination);
-
-            osc.start(now);
-            osc.stop(now + 1.1);
-
-            // Whispering static undertone
-            const bufferSize = ctx.sampleRate * 0.7;
-            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-            const noise = ctx.createBufferSource();
-            noise.buffer = buffer;
-
-            const nFilter = ctx.createBiquadFilter();
-            nFilter.type = 'bandpass';
-            nFilter.frequency.setValueAtTime(800, now);
-            nFilter.Q.setValueAtTime(4.0, now);
-
-            const nGain = ctx.createGain();
-            nGain.gain.setValueAtTime(0.01, now);
-            nGain.gain.linearRampToValueAtTime(0.18, now + 0.2);
-            nGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.75);
-
-            noise.connect(nFilter);
-            nFilter.connect(nGain);
-            nGain.connect(ctx.destination);
-            noise.start(now);
-        } catch (e) {
-            console.error("Tab seance sound error:", e);
-        }
+        this.playGhostMoan();
     }
 
     // Tab 3: Ofrenda - Solemn Cathedral Church Death Bell & Sacred Chime
@@ -567,6 +512,160 @@ class SpectralAudioEngine {
             sub.stop(now + 1.85);
         } catch (e) {
             console.error("Thunder sound error:", e);
+        }
+    }
+
+    // Halloween Ghost Moan - Iconic Mournful Spectral Wail ("Ooooo-Woooo-ooooo...")
+    playGhostMoan() {
+        const ctx = this.ensureContext();
+        try {
+            const now = ctx.currentTime;
+            const duration = 2.4;
+
+            // 1. Dual Vocal Harmonic Oscillators (Singing Phantom)
+            const osc1 = ctx.createOscillator();
+            const osc2 = ctx.createOscillator();
+            const mainGain = ctx.createGain();
+
+            // Fundamental pitch: A3 (220Hz) rising to E4 (320Hz), dipping to D4 (280Hz), fading down to 160Hz
+            osc1.type = 'sawtooth';
+            osc2.type = 'sine';
+
+            osc1.frequency.setValueAtTime(220, now);
+            osc1.frequency.exponentialRampToValueAtTime(320, now + 0.6);
+            osc1.frequency.linearRampToValueAtTime(280, now + 1.2);
+            osc1.frequency.exponentialRampToValueAtTime(160, now + duration);
+
+            osc2.frequency.setValueAtTime(222, now); // slight chorus detune
+            osc2.frequency.exponentialRampToValueAtTime(324, now + 0.6);
+            osc2.frequency.linearRampToValueAtTime(282, now + 1.2);
+            osc2.frequency.exponentialRampToValueAtTime(162, now + duration);
+
+            // LFO Vibrato (4.5Hz warble)
+            const lfo = ctx.createOscillator();
+            const lfoGain = ctx.createGain();
+            lfo.frequency.setValueAtTime(4.5, now);
+            lfoGain.gain.setValueAtTime(12, now);
+            lfoGain.gain.linearRampToValueAtTime(24, now + 0.8);
+            lfoGain.gain.linearRampToValueAtTime(8, now + duration);
+            lfo.connect(osc1.frequency);
+            lfo.connect(osc2.frequency);
+            lfo.start(now);
+            lfo.stop(now + duration);
+
+            // Formant Filter 1 ("Oooh" vowel cavity ~450Hz - 700Hz)
+            const formant1 = ctx.createBiquadFilter();
+            formant1.type = 'bandpass';
+            formant1.frequency.setValueAtTime(450, now);
+            formant1.frequency.linearRampToValueAtTime(680, now + 0.6);
+            formant1.frequency.linearRampToValueAtTime(400, now + duration);
+            formant1.Q.setValueAtTime(6.0, now);
+
+            // Formant Filter 2 ("Wuuuh" vowel resonance ~850Hz)
+            const formant2 = ctx.createBiquadFilter();
+            formant2.type = 'bandpass';
+            formant2.frequency.setValueAtTime(850, now);
+            formant2.frequency.linearRampToValueAtTime(1100, now + 0.7);
+            formant2.frequency.linearRampToValueAtTime(600, now + duration);
+            formant2.Q.setValueAtTime(4.5, now);
+
+            // Envelope Gain
+            mainGain.gain.setValueAtTime(0.001, now);
+            mainGain.gain.linearRampToValueAtTime(0.48, now + 0.35);
+            mainGain.gain.linearRampToValueAtTime(0.42, now + 1.1);
+            mainGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+            osc1.connect(formant1);
+            osc2.connect(formant2);
+            formant1.connect(mainGain);
+            formant2.connect(mainGain);
+            mainGain.connect(ctx.destination);
+
+            osc1.start(now);
+            osc2.start(now);
+            osc1.stop(now + duration + 0.05);
+            osc2.stop(now + duration + 0.05);
+
+            // 2. Cold Graveyard Wind Woosh Undertone
+            const bufferSize = ctx.sampleRate * 2.0;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+            const noise = ctx.createBufferSource();
+            noise.buffer = buffer;
+
+            const windFilter = ctx.createBiquadFilter();
+            windFilter.type = 'bandpass';
+            windFilter.frequency.setValueAtTime(350, now);
+            windFilter.frequency.exponentialRampToValueAtTime(900, now + 0.8);
+            windFilter.frequency.exponentialRampToValueAtTime(250, now + 2.0);
+            windFilter.Q.setValueAtTime(3.5, now);
+
+            const windGain = ctx.createGain();
+            windGain.gain.setValueAtTime(0.001, now);
+            windGain.gain.linearRampToValueAtTime(0.25, now + 0.4);
+            windGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.1);
+
+            noise.connect(windFilter);
+            windFilter.connect(windGain);
+            windGain.connect(ctx.destination);
+
+            noise.start(now);
+        } catch (e) {
+            console.error("Ghost moan sound error:", e);
+        }
+    }
+
+    // Bat Flutter - Rapid wing flaps & high ultrasonic echoes
+    playBatFlutter() {
+        const ctx = this.ensureContext();
+        try {
+            const now = ctx.currentTime;
+            // 7 rapid wing flap whooshes
+            for (let i = 0; i < 7; i++) {
+                const t = now + (i * 0.075);
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                const filter = ctx.createBiquadFilter();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(140 + Math.random() * 40, t);
+                osc.frequency.exponentialRampToValueAtTime(45, t + 0.065);
+
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(600, t);
+
+                gain.gain.setValueAtTime(0.01, t);
+                gain.gain.linearRampToValueAtTime(0.3, t + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.065);
+
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start(t);
+                osc.stop(t + 0.07);
+            }
+
+            // High bat echolocation squeaks
+            const squeak = ctx.createOscillator();
+            const sqGain = ctx.createGain();
+            squeak.type = 'sine';
+            squeak.frequency.setValueAtTime(2800, now + 0.08);
+            squeak.frequency.exponentialRampToValueAtTime(4200, now + 0.16);
+            squeak.frequency.exponentialRampToValueAtTime(1900, now + 0.25);
+
+            sqGain.gain.setValueAtTime(0.001, now + 0.08);
+            sqGain.gain.linearRampToValueAtTime(0.12, now + 0.14);
+            sqGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
+
+            squeak.connect(sqGain);
+            sqGain.connect(ctx.destination);
+            squeak.start(now + 0.08);
+            squeak.stop(now + 0.3);
+        } catch (e) {
+            console.error("Bat flutter error:", e);
         }
     }
 

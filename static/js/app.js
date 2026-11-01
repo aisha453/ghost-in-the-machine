@@ -26,14 +26,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const possessionPct = document.getElementById("possessionPct");
     const jumpscareOverlay = document.getElementById("jumpscareOverlay");
     const headerSkull = document.getElementById("headerSkull");
+    const headerPumpkin = document.getElementById("headerPumpkin");
 
     // Initialize Atmosphere
     createAtmosphereParticles();
     spawnFloatingGhosts(4);
+    spawnHalloweenBats(4);
     startCreepyEyesLoop();
 
     // ==================== SOUNDBOARD CONTROLS ====================
     const sndMusic = document.getElementById("sndMusic");
+    const sndGhostMoan = document.getElementById("sndGhostMoan");
+    const sndBatSwarm = document.getElementById("sndBatSwarm");
     const sndThunder = document.getElementById("sndThunder");
     const sndBanshee = document.getElementById("sndBanshee");
     const sndHeartbeat = document.getElementById("sndHeartbeat");
@@ -68,6 +72,24 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
         triggerEMF(emfLevel);
+    }
+
+    if (headerPumpkin) {
+        headerPumpkin.addEventListener("click", () => {
+            playSpookyAction(headerPumpkin, () => window.spectralAudio.playGhostMoan(), 4);
+        });
+    }
+
+    if (sndGhostMoan) {
+        sndGhostMoan.addEventListener("click", () => {
+            playSpookyAction(sndGhostMoan, () => window.spectralAudio.playGhostMoan(), 4);
+        });
+    }
+
+    if (sndBatSwarm) {
+        sndBatSwarm.addEventListener("click", () => {
+            playSpookyAction(sndBatSwarm, () => window.spectralAudio.playBatFlutter(), 3);
+        });
     }
 
     if (sndThunder) sndThunder.addEventListener("click", () => {
@@ -205,7 +227,7 @@ document.addEventListener("DOMContentLoaded", () => {
             } else if (tabId === "seance") {
                 window.spectralAudio.playTabSeanceSound();
                 triggerEMF(4);
-                if (indicator) indicator.innerHTML = `🔊 Soundscape: <strong style="color:#f472b6;">🔮 Paranormal Banshee Wail & EVP</strong>`;
+                if (indicator) indicator.innerHTML = `🔊 Soundscape: <strong style="color:#c084fc;">👻 Eerie Ghost Moan & EVP</strong>`;
             } else if (tabId === "ofrenda") {
                 window.spectralAudio.playTabOfrendaSound();
                 triggerEMF(2);
@@ -714,12 +736,17 @@ Require stack:
         if (!container) return;
 
         const ghostSvg = `
-            <svg viewBox="0 0 64 64" fill="none">
-                <path d="M16 32 C16 16 48 16 48 32 C48 48 44 56 40 52 C36 48 34 56 30 52 C26 48 24 56 20 52 C16 48 16 40 16 32 Z" 
-                      fill="rgba(244, 114, 182, 0.25)" stroke="rgba(244, 114, 182, 0.7)" stroke-width="1.5" />
-                <circle cx="26" cy="30" r="3.5" fill="#ff1e38" />
-                <circle cx="38" cy="30" r="3.5" fill="#ff1e38" />
-                <ellipse cx="32" cy="40" rx="3" ry="5" fill="#05060a" />
+            <svg viewBox="0 0 72 80" width="68" height="76" fill="none" class="halloween-ghost-svg">
+                <!-- Ethereal flowing sheet body with ripples -->
+                <path d="M12 40 C12 18 60 18 60 40 C60 58 56 68 50 63 C44 58 42 68 36 63 C30 58 28 68 22 63 C16 58 12 50 12 40 Z" 
+                      fill="rgba(255, 255, 255, 0.32)" stroke="#ff7518" stroke-width="2" />
+                <!-- Hollow Oval Eyes with glowing pupils -->
+                <ellipse cx="27" cy="34" rx="4.5" ry="6.5" fill="#030408" stroke="#ff1e38" stroke-width="1.2" />
+                <circle cx="28" cy="33" r="1.8" fill="#ff7518" />
+                <ellipse cx="45" cy="34" rx="4.5" ry="6.5" fill="#030408" stroke="#ff1e38" stroke-width="1.2" />
+                <circle cx="44" cy="33" r="1.8" fill="#ff7518" />
+                <!-- Mournful Oooooh Mouth -->
+                <ellipse cx="36" cy="48" rx="4.2" ry="7.2" fill="#030408" stroke="#ff7518" stroke-width="1.4" />
             </svg>
         `;
 
@@ -736,7 +763,7 @@ Require stack:
             ghost.addEventListener("click", () => {
                 unmuteIfNeeded();
                 if (window.spectralAudio) {
-                    window.spectralAudio.playBansheeScreech();
+                    window.spectralAudio.playGhostMoan();
                 }
                 triggerEMF(5);
                 ghost.style.transform = "scale(2.5) rotate(45deg)";
@@ -745,11 +772,55 @@ Require stack:
                     ghost.style.left = Math.random() * 80 + "vw";
                     ghost.style.top = Math.random() * 70 + "vh";
                     ghost.style.transform = "scale(1)";
-                    ghost.style.opacity = "0.4";
+                    ghost.style.opacity = "0.7";
                 }, 4000);
             });
 
             container.appendChild(ghost);
+        }
+    }
+
+    // ==================== HALLOWEEN FLYING BATS ====================
+    function spawnHalloweenBats(count = 4) {
+        const container = document.getElementById("halloweenBatsContainer");
+        if (!container) return;
+
+        const batSvg = `
+            <svg viewBox="0 0 64 36" width="56" height="32" fill="#1b0e2b" stroke="#ff7518" stroke-width="1.2" class="bat-svg">
+                <!-- Bat body and ears -->
+                <ellipse cx="32" cy="20" rx="4.5" ry="7" fill="#07030e" />
+                <polygon points="29,14 27,8 31,12" fill="#07030e" stroke="#ff7518" stroke-width="0.8" />
+                <polygon points="35,14 37,8 33,12" fill="#07030e" stroke="#ff7518" stroke-width="0.8" />
+                <!-- Glowing red bat eyes -->
+                <circle cx="30.5" cy="17" r="1.2" fill="#ff1e38" />
+                <circle cx="33.5" cy="17" r="1.2" fill="#ff1e38" />
+                <!-- Left Wing -->
+                <path d="M28 18 Q18 4 6 12 Q12 24 18 20 Q24 28 28 22 Z" fill="#150a24" />
+                <!-- Right Wing -->
+                <path d="M36 18 Q46 4 58 12 Q52 24 46 20 Q40 28 36 22 Z" fill="#150a24" />
+            </svg>
+        `;
+
+        for (let i = 0; i < count; i++) {
+            const bat = document.createElement("div");
+            bat.className = "halloween-bat";
+            bat.innerHTML = batSvg;
+            bat.style.top = (8 + Math.random() * 32) + "vh";
+            bat.style.animationDelay = (i * 3.5) + "s";
+            bat.style.animationDuration = (8 + Math.random() * 5) + "s";
+
+            // Click or hover interaction
+            bat.addEventListener("click", () => {
+                unmuteIfNeeded();
+                if (window.spectralAudio) {
+                    window.spectralAudio.playBatFlutter();
+                }
+                triggerEMF(3);
+                bat.classList.add("swoop-away");
+                setTimeout(() => bat.classList.remove("swoop-away"), 3500);
+            });
+
+            container.appendChild(bat);
         }
     }
 

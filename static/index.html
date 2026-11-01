@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ghost in the Machine | La Máquina de las Ánimas</title>
-    <link rel="stylesheet" href="/static/css/ghost.css?v=2.0">
+    <title>Ghost in the Machine | Halloween &amp; Día de los Muertos</title>
+    <link rel="stylesheet" href="/static/css/ghost.css?v=3.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
@@ -19,6 +19,9 @@
 
     <!-- Hidden Creepy Eyes in Shadows -->
     <div id="creepyEyesContainer"></div>
+
+    <!-- Halloween Flying Bats Layer -->
+    <div id="halloweenBatsContainer"></div>
 
     <!-- Jumpscare Glitch Skull Overlay -->
     <div class="jumpscare-overlay" id="jumpscareOverlay">
@@ -40,10 +43,11 @@
     <!-- Header Navigation -->
     <header>
         <div class="logo-group">
-            <span class="skull-icon" id="headerSkull" title="Click to provoke the entity" style="cursor: pointer;">💀</span>
+            <span class="pumpkin-icon" id="headerPumpkin" title="Click to summon Halloween spirits" style="cursor: pointer; font-size: 2.2rem; filter: drop-shadow(0 0 14px #ff7518); animation: pumpkinFlicker 2.5s infinite alternate;">🎃</span>
+            <span class="skull-icon" id="headerSkull" title="Click to provoke the entity" style="cursor: pointer; font-size: 1.8rem;">💀</span>
             <div class="title-wrap">
-                <h1>Ghost in the Machine</h1>
-                <p>La Máquina de las Ánimas &bull; Local Open-AI Possession & Altar Suite</p>
+                <h1 style="color: #ff9a3c; text-shadow: 0 0 16px rgba(255, 117, 24, 0.8), 0 0 30px rgba(181, 23, 158, 0.6);">🎃 Ghost in the Machine 🎃</h1>
+                <p style="color: #fed7aa; letter-spacing: 0.5px;">Halloween &amp; Día de los Muertos Edition &bull; Local Open-AI Possession &amp; Altar Suite</p>
             </div>
         </div>
 
@@ -86,15 +90,17 @@
 
     <!-- Spooky Soundboard Toolbar -->
     <div class="soundboard-toolbar">
-        <span class="soundboard-title">👻 GHOST SOUNDBOARD:</span>
-        <button class="sound-btn" id="sndMusic" style="color: #f472b6; border-color: rgba(244, 114, 182, 0.5); font-weight: bold;">🎵 Ghost Music: OFF</button>
+        <span class="soundboard-title">🎃 HALLOWEEN SOUNDBOARD:</span>
+        <button class="sound-btn" id="sndMusic" style="color: #fb923c; border-color: rgba(251, 146, 60, 0.6); font-weight: bold;">🎵 Gothic Music: OFF</button>
+        <button class="sound-btn" id="sndGhostMoan" style="color: #c084fc; border-color: rgba(192, 132, 252, 0.7); font-weight: bold;">👻 Ghost Moan: Oooooh</button>
+        <button class="sound-btn" id="sndBatSwarm">🦇 Bat Flutter</button>
         <button class="sound-btn" id="sndThunder">⚡ Thunder Strike</button>
         <button class="sound-btn" id="sndBanshee">😱 Banshee Screech</button>
         <button class="sound-btn" id="sndHeartbeat">🩸 Heartbeat Pulse</button>
-        <button class="sound-btn" id="sndCreak">🚪 Coffin Creak</button>
+        <button class="sound-btn" id="sndCreak">🚪 Crypt Creak</button>
         <button class="sound-btn" id="sndWhisper">📻 EVP Whispers</button>
         <button class="sound-btn" id="sndStinger" style="color:#ff3344; border-color:#ff1e38;">💀 Provoke Apparition</button>
-        <span style="margin-left: auto; font-size: 0.68rem; color: #94a3b8;">Click floating ghosts to banish them</span>
+        <span style="margin-left: auto; font-size: 0.68rem; color: #fed7aa;">Click ghosts or bats to banish them</span>
     </div>
 
     <!-- Navigation Tabs -->
@@ -103,16 +109,16 @@
             <span>📟</span> [ 1 ] THE HAUNTED TERMINAL <small style="opacity:0.75; font-size:0.7rem;">⚡ Glitch</small>
         </button>
         <button class="tab-btn" data-tab="seance">
-            <span>🔮</span> [ 2 ] THE SÉANCE CHAMBER <small style="opacity:0.75; font-size:0.7rem;">👻 Wail</small>
+            <span>🔮</span> [ 2 ] THE SÉANCE CHAMBER <small style="opacity:0.75; font-size:0.7rem;">👻 Ghost Moan</small>
         </button>
         <button class="tab-btn" data-tab="ofrenda">
             <span>🏵️</span> [ 3 ] DÍA DE LOS MUERTOS OFRENDA <small style="opacity:0.75; font-size:0.7rem;">🔔 Bell</small>
         </button>
         <button class="tab-btn" data-tab="oracle">
-            <span>⚡</span> [ 4 ] SILICON VITALS & MANIFESTO <small style="opacity:0.75; font-size:0.7rem;">💓 Heartbeat</small>
+            <span>🎃</span> [ 4 ] SILICON VITALS & MANIFESTO <small style="opacity:0.75; font-size:0.7rem;">💓 Heartbeat</small>
         </button>
         <button class="tab-btn" data-tab="exorcist">
-            <span>⚡</span> [ 5 ] TERMINAL EXORCIST <small style="opacity:0.75; font-size:0.7rem;">⚡ Chant</small>
+            <span>⚡</span> [ 5 ] TERMINAL EXORCIST <small style="opacity:0.75; font-size:0.7rem;">🧙‍♂️ Chant</small>
         </button>
         <div class="active-sound-indicator" id="activeSoundIndicator" style="margin-left: auto; align-self: center; font-size: 0.72rem; color: #cbd5e1; background: rgba(0,0,0,0.5); padding: 4px 12px; border-radius: 4px; border: 1px solid var(--border-blood);">
             🔊 Soundscape: <strong style="color:var(--accent-phosphor);">⚡ Electric Glitch & Coil Surge</strong>
@@ -439,7 +445,7 @@ ModuleNotFoundError: No module named 'requests'"></textarea>
     </footer>
 
     <!-- Scripts -->
-    <script src="/static/js/audio_synth.js?v=2.0"></script>
-    <script src="/static/js/app.js?v=2.0"></script>
+    <script src="/static/js/audio_synth.js?v=3.0"></script>
+    <script src="/static/js/app.js?v=3.0"></script>
 </body>
 </html>
